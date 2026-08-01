@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ExpenSplit — Documentation</title>
+  <style>
+    :root {
+      --primary: #5bc5a7;
+      --primary-dark: #3da88a;
+      --primary-light: #e8f8f4;
+      --text: #2d3748;
+      --text-muted: #718096;
+      --border: #e2e8f0;
+      --bg: #f0f4f8;
+      --card: #ffffff;
+      --warning-bg: #fffbeb;
+      --warning-border: #f6e05e;
+      --tip-bg: #e8f8f4;
+      --tip-border: #5bc5a7;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top nav ── */
+    .topbar {
+      background: var(--primary);
+      color: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(91,197,167,0.35);
+    }
+    .topbar-brand { font-size: 18px; font-weight: 700; text-decoration: none; color: white; }
+    .topbar-link  { font-size: 13px; color: rgba(255,255,255,0.85); text-decoration: none; background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; }
+    .topbar-link:hover { background: rgba(255,255,255,0.32); }
+
+    /* ── Layout ── */
+    .layout { display: flex; max-width: 1080px; margin: 0 auto; gap: 32px; padding: 32px 20px 80px; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 72px;
+      align-self: flex-start;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+    }
+    .sidebar-section { margin-bottom: 24px; }
+    .sidebar-heading { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 8px; }
+    .sidebar-link {
+      display: block; font-size: 13px; color: var(--text-muted);
+      text-decoration: none; padding: 4px 0;
+      border-left: 2px solid transparent; padding-left: 10px;
+      transition: all 0.15s;
+    }
+    .sidebar-link:hover { color: var(--primary-dark); border-left-color: var(--primary); }
+
+    /* ── Main ── */
+    .main { flex: 1; min-width: 0; }
+
+    /* ── Sections ── */
+    .doc-section { margin-bottom: 48px; }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 10px; color: var(--text); }
+    h2 { font-size: 20px; font-weight: 700; margin: 40px 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+    h3 { font-size: 15px; font-weight: 700; margin: 24px 0 8px; }
+    p  { margin-bottom: 12px; font-size: 14px; color: var(--text); }
+    ul, ol { padding-left: 20px; margin-bottom: 12px; }
+    li { font-size: 14px; margin-bottom: 5px; }
+    strong { color: var(--text); }
+    code {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      background: #edf2f7; border-radius: 4px;
+      padding: 1px 6px; font-size: 12px; color: #c53030;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: var(--primary);
+      color: white;
+      border-radius: var(--radius);
+      padding: 28px 28px 24px;
+      margin-bottom: 32px;
+    }
+    .hero h1 { color: white; font-size: 26px; margin-bottom: 8px; }
+    .hero p  { color: rgba(255,255,255,0.88); font-size: 14px; margin: 0; }
+
+    /* ── Cards ── */
+    .card { background: var(--card); border-radius: var(--radius); padding: 20px 22px; margin-bottom: 16px; box-shadow: var(--shadow); }
+
+    /* ── Steps ── */
+    .steps { list-style: none; padding: 0; counter-reset: step-counter; }
+    .steps li {
+      counter-increment: step-counter;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .steps li::before {
+      content: counter(step-counter);
+      background: var(--primary); color: white;
+      border-radius: 50%; width: 24px; height: 24px;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .steps li .step-body { flex: 1; }
+    .steps li .step-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .steps li .step-desc  { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── Callouts ── */
+    .tip, .note {
+      border-radius: 8px; padding: 12px 16px;
+      font-size: 13px; line-height: 1.55; margin-bottom: 14px;
+      border-left: 3px solid;
+    }
+    .tip  { background: var(--tip-bg);     border-color: var(--primary);  }
+    .note { background: var(--warning-bg); border-color: var(--warning-border); }
+    .tip strong, .note strong { display: block; margin-bottom: 3px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tip strong  { color: var(--primary-dark); }
+    .note strong { color: #b7791f; }
+
+    /* ── Split type table ── */
+    .split-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 14px; }
+    .split-table th { background: var(--primary-light); padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--primary-dark); }
+    .split-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .split-table tr:last-child td { border-bottom: none; }
+    .split-table tr:hover td { background: #f7fafc; }
+
+    /* ── FAQ ── */
+    .faq-item { border-bottom: 1px solid var(--border); padding: 18px 0; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .faq-q::before { content: "Q  "; color: var(--primary); font-weight: 800; }
+    .faq-a { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .faq-a p { margin-bottom: 6px; font-size: 13px; color: var(--text-muted); }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 20px; vertical-align: middle;
+    }
+    .badge-green  { background: #c6f6d5; color: #276749; }
+    .badge-yellow { background: #fefcbf; color: #744210; }
+    .badge-gray   { background: #edf2f7; color: #4a5568; }
+    .badge-teal   { background: var(--primary-light); color: var(--primary-dark); }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .sidebar { display: none; }
+      .layout  { padding: 20px 14px 60px; }
+      h1 { font-size: 22px; }
+      h2 { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a class="topbar-brand" href="expensplit.html">💸 ExpenSplit</a>
+  <a class="topbar-link" href="expensplit.html">Open App →</a>
+</nav>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-heading">Overview</div>
+      <a class="sidebar-link" href="#overview">What is ExpenSplit?</a>
+      <a class="sidebar-link" href="#rooms">Rooms &amp; Sharing</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-heading">How-to Guides</div>
+      <a class="sidebar-link" href="#howto-setup">Set up a group</a>
+      <a class="sidebar-link" href="#howto-expense">Add an expense</a>
+      <a class="sidebar-link" href="#howto-splits">Split types</a>
+      <a class="sidebar-link" href="#howto-multipayer">Multiple payers</a>
+      <a class="sidebar-link" href="#howto-signoff">Sign off</a>
+      <a class="sidebar-link" href="#howto-settle">Record a payment</a>
+      <a class="sidebar-link" href="#howto-share">Share the room</a>
+      <a class="sidebar-link" href="#howto-settings">Settings</a>
+      <a class="sidebar-link" href="#howto-reuse">Reuse for a new trip</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-heading">FAQ</div>
+      <a class="sidebar-link" href="#faq">All questions</a>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>ExpenSplit Documentation</h1>
+      <p>Everything you need to track group expenses, split costs, and settle up — no sign-up required.</p>
+    </div>
+
+    <!-- ── Overview ── -->
+    <div class="doc-section" id="overview">
+      <h2>What is ExpenSplit?</h2>
+      <p>ExpenSplit is a lightweight, single-file web app for splitting group expenses — trips, flatmates, events, dinners. It works like Splitwise but lives entirely in one HTML file that you can host on GitHub Pages and share with anyone.</p>
+      <p>Key characteristics:</p>
+      <ul>
+        <li><strong>No sign-up or login</strong> — access is controlled by a room link.</li>
+        <li><strong>Real-time sync</strong> — all group members see changes instantly via Firebase.</li>
+        <li><strong>Flexible splits</strong> — equal, unequal, percentage, or share-based.</li>
+        <li><strong>Smart settlements</strong> — minimises the number of transfers needed to clear all debts.</li>
+        <li><strong>Sign-off flow</strong> — each member acknowledges the expense list before settling.</li>
+      </ul>
+    </div>
+
+    <!-- ── Rooms ── -->
+    <div class="doc-section" id="rooms">
+      <h2>Rooms &amp; Sharing</h2>
+      <p>A <strong>room</strong> is a unique workspace shared by your group. Every expense, balance, and settlement lives inside one room. Multiple rooms can exist independently — one per trip, household, or event.</p>
+
+      <div class="card">
+        <h3 style="margin-top:0">How rooms work</h3>
+        <ul>
+          <li>When you open ExpenSplit for the first time, a random <strong>Room ID</strong> is generated automatically and stored in your browser.</li>
+          <li>The Room ID appears in the URL as <code>#room=abc123xyz</code> and on the People tab.</li>
+          <li>Anyone who opens the same URL lands in the same room and sees the same data.</li>
+          <li>Rooms are backed by Firebase Firestore — data persists in the cloud, not just your browser.</li>
+        </ul>
+      </div>
+
+      <div class="tip">
+        <strong>Tip</strong>
+        Tap the 🔗 button in the header (or <strong>Copy Link</strong> on the People tab) to copy your room URL and send it to your group on WhatsApp, Telegram, or email.
+      </div>
+      <div class="note">
+        <strong>Note</strong>
+        Keep your room link private — anyone with the link can view and edit the data.
+      </div>
+    </div>
+
+    <!-- ── How-to: Setup ── -->
+    <div class="doc-section" id="howto-setup">
+      <h2>How to: Set up a group</h2>
+      <ol class="steps">
+        <li>
+          <div class="step-body">
+            <div class="step-title">Open the app and name the group</div>
+            <div class="step-desc">Tap <em>"Tap to add a name"</em> under the header title — type a name (e.g. "Goa Trip 2025") and press Enter. You can also do this from <strong>Settings → Group / Expense Name</strong>.</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <div class="step-title">Add all members</div>
+            <div class="step-desc">On the <strong>People</strong> tab, type each person's name in the input field and tap <strong>Add</strong> (or press Enter). Repeat for every member. Each person gets a colour-coded avatar with their initials.</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <div class="step-title">Share the room link with the group</div>
+            <div class="step-desc">Tap <strong>Copy Link</strong> on the People tab (or the 🔗 button in the header). Send the copied URL to your group — they open it and immediately join the same room.</div>
+          </div>
+        </li>
+      </ol>
+      <div class="tip">
+        <strong>Tip</strong>
+        Add everyone before adding expenses — people can only be assigned to expenses if they exist in the group.
+      </div>
+    </div>
+
+    <!-- ── How-to: Add expense ── -->
+    <div class="doc-section" id="howto-expense">
+      <h2>How to: Add an expense</h2>
+      <ol class="steps">
+        <li>
+          <div class="step-body">
+            <div class="step-title">Open the Expenses tab and tap +</div>
+            <div class="step-desc">Switch to the <strong>Expenses</strong> tab. Tap the green <strong>+</strong> button at the bottom-right of the screen.</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <div class="step-title">Fill in the description, amount, and date</div>
+            <div class="step-desc">Enter a short description (e.g. "Hotel", "Dinner"). The app auto-picks an emoji icon based on keywords. Enter the total amount and confirm the date (defaults to today).</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <div class="step-title">Set who paid</div>
+            <div class="step-desc">Under <strong>Paid By</strong>, select the person who paid from the dropdown. If multiple people paid, tap <strong>+ Add payer</strong> and enter each person's contribution. The hint turns green when the payer amounts exactly match the total.</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <div class="step-title">Choose a split type and configure it</div>
+            <div class="step-desc">Pick how to divide the cost among members (see <a href="#howto-splits">Split types</a> below). The hint below the list shows whether the split is valid.</div>
+          </div>
+        </li>
+        <li>
+          <div class="step-body">
+            <div class="step-title">Tap Save Expense</div>
+            <div class="step-desc">The expense appears in the list with a summary badge. All group members see it instantly.</div>
+          </div>
+        </li>
+      </ol>
+      <div class="tip">
+        <strong>Tip</strong>
+        Tap any expense card to view a full breakdown. From the detail view you can <strong>Edit</strong> or <strong>Delete</strong> it.
+      </div>
+    </div>
+
+    <!-- ── How-to: Splits ── -->
+    <div class="doc-section" id="howto-splits">
+      <h2>How to: Choose a split type</h2>
+      <p>ExpenSplit supports four ways to divide an expense. Choose the one that matches the situation:</p>
+
+      <table class="split-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>When to use</th>
+            <th>How it works</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-teal">Equal</span></td>
+            <td>Everyone pays the same</td>
+            <td>Total ÷ number of selected members. Check or uncheck people to include/exclude them.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-teal">Unequal</span></td>
+            <td>Each person owes a specific amount</td>
+            <td>Type the exact amount for each person. The hint shows the running total and how much is left to assign.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-teal">%</span></td>
+            <td>Split by percentage</td>
+            <td>Type a percentage (0–100) for each person. Percentages must sum to exactly 100%. Uncheck members to exclude them.</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-teal">Shares</span></td>
+            <td>Proportional split (e.g. 2 adults, 1 child)</td>
+            <td>Assign a number of shares to each person (e.g. 2, 2, 1). The cost is divided proportionally. The hint shows the amount each person will owe.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Percentage split step-by-step</h3>
+      <ol class="steps">
+        <li><div class="step-body"><div class="step-title">Select "%" in the split tabs</div></div></li>
+        <li><div class="step-body"><div class="step-title">Type each person's percentage directly in their input field</div><div class="step-desc">Click or tap the number field next to a person's name. Type the percentage value (e.g. 40). The field accepts free text so you can edit freely.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Check the hint below</div><div class="step-desc">It will show the running sum. Once all percentages add up to 100 the hint turns green.</div></div></li>
+      </ol>
+
+      <div class="note">
+        <strong>Common mistake</strong>
+        Clicking the input field directly — not the row background — ensures the checkbox isn't accidentally toggled. Tap the number box itself to start typing.
+      </div>
+    </div>
+
+    <!-- ── How-to: Multiple payers ── -->
+    <div class="doc-section" id="howto-multipayer">
+      <h2>How to: Handle multiple payers</h2>
+      <p>Some expenses are paid by more than one person (e.g. two people split a hotel bill at the counter).</p>
+      <ol class="steps">
+        <li><div class="step-body"><div class="step-title">In the Add Expense form, go to the Paid By section</div></div></li>
+        <li><div class="step-body"><div class="step-title">Select the first payer and enter their amount</div></div></li>
+        <li><div class="step-body"><div class="step-title">Tap "+ Add payer" to add a second row</div><div class="step-desc">A new payer row appears. Select the second person and enter the amount they paid.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Confirm the hint is green</div><div class="step-desc">The payer total must equal the expense total. The hint shows the difference if they don't match.</div></div></li>
+      </ol>
+    </div>
+
+    <!-- ── How-to: Sign-off ── -->
+    <div class="doc-section" id="howto-signoff">
+      <h2>How to: Sign off on expenses</h2>
+      <p>Before settling, each member should confirm that the expense list is complete and correct from their perspective. This prevents disputes later.</p>
+      <ol class="steps">
+        <li><div class="step-body"><div class="step-title">Go to the Settle Up tab</div><div class="step-desc">The <strong>Sign-offs</strong> card appears at the top showing the confirmation status for each member.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Each member taps their own Confirm button</div><div class="step-desc">This records the date of their confirmation. The badge turns green: <span class="badge badge-green">✓ Confirmed · 14 May</span>.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Once everyone is confirmed, proceed to settle</div><div class="step-desc">The summary shows "✓ All N members confirmed". Now follow the Suggested Settlements to pay each other.</div></div></li>
+      </ol>
+
+      <h3>Sign-off statuses</h3>
+      <ul>
+        <li><span class="badge badge-gray">Pending</span> — member hasn't confirmed yet.</li>
+        <li><span class="badge badge-green">✓ Confirmed</span> — confirmed and no new expenses since.</li>
+        <li><span class="badge badge-yellow">⚠ N new expenses added</span> — confirmed earlier but new expenses were added after. Member should Re-confirm.</li>
+      </ul>
+      <p>Any member can tap <strong>Revoke</strong> to withdraw their confirmation if they spot a mistake.</p>
+    </div>
+
+    <!-- ── How-to: Settle ── -->
+    <div class="doc-section" id="howto-settle">
+      <h2>How to: Record a payment</h2>
+      <p>The <strong>Settle Up</strong> tab shows the minimum number of transfers needed to clear all balances.</p>
+      <ol class="steps">
+        <li><div class="step-body"><div class="step-title">Review the Suggested Settlements list</div><div class="step-desc">Each row shows who pays whom and how much (e.g. "Ravi → Priya  ₹1,200").</div></div></li>
+        <li><div class="step-body"><div class="step-title">Make the payment outside the app</div><div class="step-desc">Transfer the money via UPI, bank transfer, cash, or any method you prefer.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Tap Settle on that row</div><div class="step-desc">A "Record Payment" dialog opens, pre-filled with the amount. Adjust if needed, add a note (e.g. "GPay"), and tap <strong>Confirm Payment</strong>.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Repeat for each suggested transfer</div><div class="step-desc">Once all transfers are recorded, the app shows "🎉 All settled up!"</div></div></li>
+      </ol>
+      <div class="tip">
+        <strong>Tip</strong>
+        The smart settlement algorithm minimises transfers. For example, 5 people with complex debts may only need 4 or fewer payments to fully balance out.
+      </div>
+    </div>
+
+    <!-- ── How-to: Share ── -->
+    <div class="doc-section" id="howto-share">
+      <h2>How to: Share the room with your group</h2>
+      <ol class="steps">
+        <li><div class="step-body"><div class="step-title">Tap the 🔗 button in the header, or Copy Link on the People tab</div><div class="step-desc">The room URL (e.g. <code>https://yourname.github.io/expensplit.html#room=abc123</code>) is copied to your clipboard.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Send the URL to your group</div><div class="step-desc">Paste into WhatsApp, Telegram, iMessage, email — wherever your group communicates.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Group members open the link</div><div class="step-desc">Their browser loads the same room. The <span class="badge badge-green">● Live</span> pill confirms they're connected. All existing data loads immediately.</div></div></li>
+      </ol>
+      <div class="note">
+        <strong>Important</strong>
+        If a group member opens the base URL (<code>expensplit.html</code>) without the <code>#room=</code> hash, they will be placed in a different room. Always share the full link including the hash.
+      </div>
+    </div>
+
+    <!-- ── How-to: Settings ── -->
+    <div class="doc-section" id="howto-settings">
+      <h2>How to: Change settings</h2>
+      <p>Tap the ⚙️ gear icon in the header to open Settings.</p>
+
+      <h3>Change the group name</h3>
+      <p>Either tap <em>"Tap to add a name"</em> in the header to edit inline, or open <strong>Settings → Group / Expense Name</strong> and type a new name. Tap <strong>Save</strong>.</p>
+
+      <h3>Change the currency symbol</h3>
+      <p>Open <strong>Settings → Currency Symbol</strong>. Type your preferred symbol (e.g. <code>$</code>, <code>€</code>, <code>£</code>, <code>¥</code>) and tap <strong>Save</strong>. All amounts displayed throughout the app update immediately.</p>
+
+      <h3>Remove a group member</h3>
+      <p>On the <strong>People</strong> tab, tap the ✕ button next to a member's name. If that person is part of any expense, you'll be asked to confirm before they are removed.</p>
+    </div>
+
+    <!-- ── How-to: Reuse ── -->
+    <div class="doc-section" id="howto-reuse">
+      <h2>How to: Reuse the app for a new trip</h2>
+      <p>Once a group has settled up completely, you can clear the data and reuse the same room for a new trip.</p>
+      <ol class="steps">
+        <li><div class="step-body"><div class="step-title">Make sure all payments are recorded</div><div class="step-desc">Go to <strong>Settle Up</strong> and record every suggested payment so the history is preserved before clearing.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Open Settings (⚙️) and tap Clear All Data</div><div class="step-desc">Confirm when prompted. All expenses and settlements are deleted.</div></div></li>
+        <li><div class="step-body"><div class="step-title">Update the group name</div><div class="step-desc">Tap the group name in the header and type the new trip name (e.g. "Kerala Trip 2026").</div></div></li>
+        <li><div class="step-body"><div class="step-title">Start adding new expenses</div><div class="step-desc">Group members, currency, and the room ID are all preserved — no need to share a new link.</div></div></li>
+      </ol>
+      <div class="tip">
+        <strong>Tip</strong>
+        Want to keep a permanent record of the old trip? Before clearing, open the browser's developer tools → Application → Firestore or take a screenshot of the Settlement History.
+      </div>
+    </div>
+
+    <!-- ── FAQ ── -->
+    <div class="doc-section" id="faq">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="card" style="padding: 8px 22px;">
+
+        <div class="faq-item">
+          <div class="faq-q">Is my data private?</div>
+          <div class="faq-a">
+            <p>Data is secured by obscurity — only people with the room link can access your group's data. The Room ID is a random 12-character string that is practically impossible to guess. That said, do not share your room link publicly (e.g. in a public post or tweet).</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">What if I lose the room link?</div>
+          <div class="faq-a">
+            <p>The Room ID is saved in your browser's local storage. If you open the app on the same browser/device you created the room on, it will reconnect automatically. The Room ID is also displayed on the People tab — copy it and store it safely.</p>
+            <p>If you open the app on a new device without the link, a new empty room will be created. Ask a group member who has the original link to share it again.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Can multiple people add expenses at the same time?</div>
+          <div class="faq-a">
+            <p>Yes. The app uses Firebase Firestore's real-time sync. When any member saves an expense, all other open browsers update automatically within seconds. A <span class="badge badge-green">● Live</span> pill in the header confirms the connection is active.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">What does ● Live / ● Offline mean?</div>
+          <div class="faq-a">
+            <p><span class="badge badge-green">● Live</span> — the app is connected to Firebase and changes sync in real time.</p>
+            <p><span class="badge" style="background:#fed7d7;color:#c53030">● Offline</span> — the Firebase connection failed (no internet, or the Firestore rules are blocking access). The app falls back to the last data saved in your browser's local storage.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">What's the difference between the four split types?</div>
+          <div class="faq-a">
+            <p><strong>Equal</strong> — splits the total evenly among selected people. Best for most shared meals or bills where everyone owes the same.</p>
+            <p><strong>Unequal</strong> — you type the exact rupee/dollar amount each person owes. Use when people ordered different items of different values.</p>
+            <p><strong>%</strong> — type a percentage for each person (must total 100%). Useful when contribution ratios are known but exact amounts vary.</p>
+            <p><strong>Shares</strong> — assign relative shares (e.g. 2, 2, 1 for two adults and a child). The app calculates proportional amounts automatically.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">How does the smart settlement work?</div>
+          <div class="faq-a">
+            <p>The app calculates each person's net balance (total paid minus total owed). It then uses a debt-minimisation algorithm to find the smallest number of transfers that brings every balance to zero. In most groups of 4–6 people this reduces the number of payments significantly compared to settling pair-by-pair.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Can I edit or delete an expense after saving?</div>
+          <div class="faq-a">
+            <p>Yes. Tap the expense card to open its detail view. Tap <strong>Edit</strong> to modify any field, or <strong>Delete</strong> to remove it. Deleting an expense will mark any group members who previously signed off as needing to re-confirm.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">What does "Re-confirm needed" mean in Sign-offs?</div>
+          <div class="faq-a">
+            <p>A member confirmed the expense list at a point in time, but new expenses were added (or deleted) after they confirmed. The <span class="badge badge-yellow">⚠ N new expenses</span> badge prompts them to review the changes and tap <strong>Re-confirm</strong> if they agree.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Does the app work without internet?</div>
+          <div class="faq-a">
+            <p>Partially. The app loads its last known state from the browser's local storage when offline. You can view existing data, but changes won't sync to other members until the connection is restored. Firebase Firestore may also buffer writes locally and replay them when reconnected.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">How many people can be in a group?</div>
+          <div class="faq-a">
+            <p>There is no hard limit in the app. Practically, groups of 2–20 people work well. Very large groups may make the settlement list harder to read, but the data and calculations remain correct.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">What happens when I tap Clear All Data?</div>
+          <div class="faq-a">
+            <p>All expenses, settlements, and sign-offs are permanently deleted from both the browser and Firebase. The group name, member list, and currency symbol are preserved. This action cannot be undone — record any important history (e.g. screenshots) before clearing.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Can I use this for multiple trips simultaneously?</div>
+          <div class="faq-a">
+            <p>Yes — open the app in different browser tabs or use different browsers/devices. Each new instance without a <code>#room=</code> hash generates a fresh room. To switch between rooms, use different room links.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">The percentage inputs keep deselecting the person — what do I do?</div>
+          <div class="faq-a">
+            <p>Click or tap directly on the <strong>number input field</strong> itself (not the row background). The row background acts as a checkbox toggle — clicking anywhere on the row except the input will check/uncheck the person. Targeting the input box directly avoids this.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Can I change the currency mid-trip?</div>
+          <div class="faq-a">
+            <p>Yes. Open <strong>Settings → Currency Symbol</strong> and update it. The new symbol is applied to all displayed amounts immediately. Note that this is a display-only change — the underlying numbers are not converted. If your group used two currencies, track them as separate rooms or convert amounts manually before entering.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
