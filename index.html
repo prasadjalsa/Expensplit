@@ -2236,16 +2236,18 @@ function renderAll() {
 // Real-time listener — updates UI when another user saves
 groupDoc.onSnapshot({ includeMetadataChanges: true }, snap => {
   if (snap.metadata.hasPendingWrites) return; // our own write, skip
+  if (snap.metadata.fromCache) { setSyncPill('error'); return; } // no server connection
+  setSyncPill('live');
   if (!snap.exists || !snap.data().state) return;
   S = snap.data().state;
   localStorage.setItem(STORE_KEY, JSON.stringify(S));
   renderAll();
-  setSyncPill('live');
 }, () => setSyncPill('error'));
 
 // Initial load
-groupDoc.get()
+groupDoc.get({ source: 'server' })
   .then(snap => {
+    setSyncPill('live');
     if (snap.exists && snap.data().state) {
       S = snap.data().state;
       localStorage.setItem(STORE_KEY, JSON.stringify(S));
@@ -2253,7 +2255,6 @@ groupDoc.get()
       load(); // fall back to localStorage
       if (S.people.length || S.expenses.length) save(); // migrate existing data up
     }
-    setSyncPill('live');
     renderAll();
   })
   .catch(() => {
