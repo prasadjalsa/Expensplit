@@ -750,7 +750,7 @@
         <li><strong>Settle Up tab</strong> — each suggested settlement shows a "Pay via UPI" strip with the payee's UPI ID and QR so the payer can scan directly.</li>
       </ul>
       <div class="help-tip"><strong>Tip</strong>Tap the 📋 copy icon next to a UPI ID to copy it straight to your clipboard, then paste it into any UPI app.</div>
-      <div class="help-note"><strong>Note</strong>QR images are stored as base64 inside the Firebase document. Keep images under 150 KB to avoid slowing down sync.</div>
+      <div class="help-note"><strong>Note</strong>QR images are stored as base64 inside the Firebase document. Keep images under 300 KB to avoid slowing down sync.</div>
     </div>
 
     <!-- Add expense -->
@@ -1094,7 +1094,7 @@
             <span style="font-size:22px">&#x1f4f7;</span>
             <div>
               <div style="font-size:13px;font-weight:600;color:var(--text)">Upload QR image</div>
-              <div style="font-size:11px;color:var(--text-muted);margin-top:1px">PNG / JPG · max 150 KB</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:1px">PNG / JPG · max 300 KB</div>
             </div>
           </label>
           <input type="file" id="pm-qr-file" accept="image/*" style="display:none" onchange="onQRSelected(this)">
@@ -2180,8 +2180,8 @@ function closeQRModal() { document.getElementById('qr-modal').style.display = 'n
 function onQRSelected(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 150 * 1024) {
-    toast('Image too large — max 150 KB'); input.value = ''; return;
+  if (file.size > 300 * 1024) {
+    toast('Image too large — max 300 KB'); input.value = ''; return;
   }
   const reader = new FileReader();
   reader.onload = e => {
