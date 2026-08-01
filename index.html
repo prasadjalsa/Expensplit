@@ -1167,7 +1167,6 @@ function getRoomId() {
 }
 const ROOM_ID   = getRoomId();
 const groupDoc  = db.collection('groups').doc(ROOM_ID);
-const STORE_KEY = 'splitease_v1_' + ROOM_ID;
 document.getElementById('room-id-display').textContent = ROOM_ID;
 
 function setSyncPill(state) {
@@ -1184,6 +1183,7 @@ function setSyncPill(state) {
 // ════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════
+const STORE_KEY = 'splitease_v1';
 let S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
 
 function load() {
@@ -1191,7 +1191,7 @@ function load() {
 }
 function save() {
   localStorage.setItem(STORE_KEY, JSON.stringify(S));
-  groupDoc.set({ state: S }).catch(e => { console.error('Firestore save:', e); setSyncPill('error'); });
+  groupDoc.set({ state: S }).catch(e => console.error('Firestore save:', e));
 }
 function uid() {
   return Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
