@@ -681,11 +681,13 @@
         <a href="#h-overview">Overview</a>
         <a href="#h-rooms">Rooms</a>
         <a href="#h-setup">Setup</a>
+        <a href="#h-upi">UPI &amp; QR</a>
         <a href="#h-expense">Add expense</a>
         <a href="#h-splits">Split types</a>
         <a href="#h-multipayer">Multi-payer</a>
         <a href="#h-signoff">Sign-offs</a>
         <a href="#h-settle">Settle up</a>
+        <a href="#h-share">Share room</a>
         <a href="#h-settings">Settings</a>
         <a href="#h-reuse">Reuse</a>
         <a href="#h-faq">FAQ</a>
@@ -724,10 +726,31 @@
       <div class="help-h2"><span class="help-icon">👥</span>How to: Set up a group</div>
       <ol class="help-steps">
         <li><div><div class="st">Name the group</div><div class="sd">Tap <em>"Tap to add a name"</em> in the header — type a name like "Goa Trip 2025" and press Enter. You can also do this via Settings ⚙️.</div></div></li>
-        <li><div><div class="st">Add all members</div><div class="sd">On the People tab, type each person's name and tap <strong>Add</strong>. Repeat for every member. Each gets a colour-coded avatar.</div></div></li>
+        <li><div><div class="st">Add all members</div><div class="sd">On the People tab, tap <strong>+ Add Member</strong>. In the modal, enter the person's name and at least one of: a UPI ID (e.g. name@upi) or a UPI QR code image. Tap <strong>Save Member</strong>. Repeat for every member.</div></div></li>
         <li><div><div class="st">Share the room link</div><div class="sd">Tap <strong>Copy Link</strong> on the People tab. Send the URL to your group — they open it and immediately join the same room.</div></div></li>
       </ol>
       <div class="help-tip"><strong>Tip</strong>Add everyone before adding expenses — people can only be assigned to expenses if they exist in the group.</div>
+    </div>
+
+    <!-- UPI & QR -->
+    <div class="card" id="h-upi">
+      <div class="help-h2"><span class="help-icon">💳</span>UPI ID &amp; QR Code</div>
+      <p class="help-p">Every member must provide at least a UPI ID or a QR code image so others can pay them during settlement.</p>
+      <div class="help-h3">Adding UPI details when adding a member</div>
+      <ol class="help-steps">
+        <li><div><div class="st">Tap + Add Member on the People tab</div></div></li>
+        <li><div><div class="st">Enter the person's name</div></div></li>
+        <li><div><div class="st">Enter a UPI ID</div><div class="sd">Type the VPA address, e.g. <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">name@upi</code>, <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">9876543210@okaxis</code>. At least one of UPI ID or QR is required.</div></div></li>
+        <li><div><div class="st">Upload a QR code image (optional)</div><div class="sd">Tap the upload area to pick a PNG or JPG from your device. Max size is 150 KB. A thumbnail preview appears.</div></div></li>
+        <li><div><div class="st">Tap Save Member</div><div class="sd">The person appears in the list with their UPI badge and/or QR thumbnail.</div></div></li>
+      </ol>
+      <div class="help-h3">Where UPI details appear</div>
+      <ul style="font-size:13px;color:var(--text-muted);padding-left:18px;line-height:1.7;margin-bottom:10px">
+        <li><strong>People tab</strong> — each member row shows a teal UPI badge (tap to copy the ID) and a QR thumbnail (tap to enlarge).</li>
+        <li><strong>Settle Up tab</strong> — each suggested settlement shows a "Pay via UPI" strip with the payee's UPI ID and QR so the payer can scan directly.</li>
+      </ul>
+      <div class="help-tip"><strong>Tip</strong>Tap the 📋 copy icon next to a UPI ID to copy it straight to your clipboard, then paste it into any UPI app.</div>
+      <div class="help-note"><strong>Note</strong>QR images are stored as base64 inside the Firebase document. Keep images under 150 KB to avoid slowing down sync.</div>
     </div>
 
     <!-- Add expense -->
@@ -810,11 +833,22 @@
       <p class="help-p">The Settle Up tab shows the <em>minimum</em> number of transfers needed to clear all balances.</p>
       <ol class="help-steps">
         <li><div><div class="st">Review Suggested Settlements</div><div class="sd">Each row shows who pays whom and how much.</div></div></li>
-        <li><div><div class="st">Make the payment outside the app</div><div class="sd">UPI, bank transfer, cash — any method works.</div></div></li>
+        <li><div><div class="st">Make the payment outside the app</div><div class="sd">Each settlement row shows a <strong>Pay via UPI</strong> strip with the payee's UPI ID (tap 📋 to copy) and QR code (tap to enlarge and scan). Transfer via GPay, PhonePe, Paytm, or any UPI app.</div></div></li>
         <li><div><div class="st">Tap Settle on that row</div><div class="sd">Pre-filled dialog opens. Adjust amount or add a note (e.g. "GPay"), then tap <strong>Confirm Payment</strong>.</div></div></li>
         <li><div><div class="st">Repeat until all transfers are recorded</div><div class="sd">App shows 🎉 All settled up! when every balance is cleared.</div></div></li>
       </ol>
       <div class="help-tip"><strong>Tip</strong>The smart settlement algorithm minimises transfers. 5 people with complex debts may need only 4 (or fewer) payments to fully balance out.</div>
+    </div>
+
+    <!-- Share room -->
+    <div class="card" id="h-share">
+      <div class="help-h2"><span class="help-icon">🔗</span>How to: Share the room</div>
+      <ol class="help-steps">
+        <li><div><div class="st">Tap the 🔗 button in the header, or Copy Link on the People tab</div><div class="sd">The full room URL (including the <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">#room=</code> hash) is copied to your clipboard.</div></div></li>
+        <li><div><div class="st">Send the URL to your group</div><div class="sd">Paste into WhatsApp, Telegram, iMessage, email — wherever your group communicates.</div></div></li>
+        <li><div><div class="st">Group members open the link</div><div class="sd">Their browser loads the same room. The <span class="badge badge-green">● Live</span> pill in the header confirms they're connected and all data loads immediately.</div></div></li>
+      </ol>
+      <div class="help-note"><strong>Important</strong>Always share the <em>full</em> link including the <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">#room=abc123</code> part. A link without the hash opens a brand-new empty room.</div>
     </div>
 
     <!-- Settings -->
@@ -826,6 +860,8 @@
       <p class="help-p">Open <strong>Settings ⚙️ → Currency Symbol</strong>. Type your symbol (e.g. $ € £ ¥) and tap <strong>Save</strong>. All amounts update immediately.</p>
       <div class="help-h3">Remove a member</div>
       <p class="help-p">On the <strong>People</strong> tab, tap ✕ next to the person's name. If they appear in any expense you'll be asked to confirm.</p>
+      <div class="help-h3">Edit a member's UPI details</div>
+      <p class="help-p">On the <strong>People</strong> tab, tap the ✏️ pencil icon next to a member's name. The same Add Member modal opens pre-filled — update the UPI ID or upload a new QR image, then tap <strong>Save Member</strong>.</p>
     </div>
 
     <!-- Reuse -->
@@ -877,11 +913,19 @@
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">What happens when I tap Clear All Data?</div>
-        <div class="faq-a"><p>All expenses, settlements, and sign-offs are permanently deleted from both the browser and Firebase. Group name, members, and currency are preserved. This cannot be undone.</p></div>
+        <div class="faq-a"><p>All expenses, settlements, and sign-offs are permanently deleted from both the browser and Firebase. The group name, member list (including their UPI details), and currency symbol are preserved. This cannot be undone — take a screenshot of the Settlement History first if you need a record.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">Can I use this for multiple trips at once?</div>
         <div class="faq-a"><p>Yes — each unique room link is a separate workspace. Open the app in a fresh browser tab (without a room hash in the URL) to generate a new room, then share that link for a different group or trip.</p></div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-q">How many people can be in a group?</div>
+        <div class="faq-a"><p>There is no hard limit. Groups of 2–20 people work well. For larger groups, note that every person's QR image is stored in a single Firestore document (1 MB limit) — keep QR images under 150 KB each to stay well within that limit.</p></div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-q">Is a UPI ID or QR code mandatory?</div>
+        <div class="faq-a"><p>Yes — at least one of a UPI ID or a QR code image is required when adding a member. This ensures the payer always has a way to transfer money during settlement. You can add both if you like. Use the ✏️ edit button on the People tab to update these details at any time.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">The % input keeps unchecking the person — what do I do?</div>
