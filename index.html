@@ -1075,6 +1075,25 @@
   </div>
 </div>
 
+<!-- ═══ SIGN-OFF WARNING MODAL ═══ -->
+<div id="signoff-warn-modal" class="overlay overlay-center" style="display:none"
+  onclick="overlayClick(event,'signoff-warn-modal',closeSignoffWarnModal)">
+  <div class="modal modal-center" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <span class="modal-title">⚠️ Sign-offs Incomplete</span>
+      <button class="btn-icon" onclick="closeSignoffWarnModal()" style="font-size:20px">&#x2715;</button>
+    </div>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:14px;line-height:1.55">
+      Some members haven't confirmed the expense list yet. It's recommended everyone signs off before settling.
+    </p>
+    <div id="signoff-warn-list" style="margin-bottom:18px"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeSignoffWarnModal()">Go Back</button>
+      <button class="btn btn-primary" style="flex:1" onclick="proceedSettle()">Proceed Anyway</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast" class="toast"></div>
 
@@ -1998,16 +2017,46 @@ function renderSettle() {
 
 // ── Settle modal ─────────────────────────────────
 let settlePayload = {};
+let pendingSettlePayload = null;
+
 function openSettleModal(fromId, toId, amount) {
-  const pending  = S.people.filter(p => ackStatus(p.id) === 'pending').map(p => p.name);
-  const stale    = S.people.filter(p => ackStatus(p.id) === 'stale').map(p => p.name);
+  const pending = S.people.filter(p => ackStatus(p.id) === 'pending').map(p => p.name);
+  const stale   = S.people.filter(p => ackStatus(p.id) === 'stale').map(p => p.name);
   if (pending.length || stale.length) {
-    let msg = 'Some members haven\'t signed off yet:\n\n';
-    if (pending.length) msg += `⏳ Not confirmed: ${pending.join(', ')}\n`;
-    if (stale.length)   msg += `⚠️  Need re-confirm: ${stale.join(', ')}\n`;
-    msg += '\nAsk everyone to confirm on the Settle Up tab before settling.\n\nProceed anyway?';
-    if (!confirm(msg)) return;
+    pendingSettlePayload = { fromId, toId, amount };
+    let html = '';
+    if (pending.length) html += pending.map(n =>
+      `<div class="balance-item" style="padding:8px 0">
+        <span class="badge badge-gray">⏳ Pending</span>
+        <span style="font-size:14px;font-weight:500;margin-left:8px">${esc(n)}</span>
+      </div>`).join('');
+    if (stale.length) html += stale.map(n =>
+      `<div class="balance-item" style="padding:8px 0">
+        <span class="badge" style="background:#fefcbf;color:#744210">⚠️ Re-confirm needed</span>
+        <span style="font-size:14px;font-weight:500;margin-left:8px">${esc(n)}</span>
+      </div>`).join('');
+    document.getElementById('signoff-warn-list').innerHTML = html;
+    document.getElementById('signoff-warn-modal').style.display = 'flex';
+    return;
   }
+  openSettleForm(fromId, toId, amount);
+}
+
+function closeSignoffWarnModal() {
+  document.getElementById('signoff-warn-modal').style.display = 'none';
+  pendingSettlePayload = null;
+}
+
+function proceedSettle() {
+  closeSignoffWarnModal();
+  if (pendingSettlePayload) {
+    const { fromId, toId, amount } = pendingSettlePayload;
+    openSettleForm(fromId, toId, amount);
+    pendingSettlePayload = null;
+  }
+}
+
+function openSettleForm(fromId, toId, amount) {
   settlePayload = { fromId, toId };
   document.getElementById('settle-form-body').innerHTML = `
     <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:8px 0 20px">
