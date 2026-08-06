@@ -600,6 +600,7 @@
           <div id="room-id-display" style="font-size:13px;font-weight:600;font-family:monospace;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
         </div>
         <button class="btn btn-primary btn-sm" onclick="shareURL()" style="flex-shrink:0">&#x1f4cb; Copy Link</button>
+        <button class="btn btn-ghost btn-sm" onclick="newRoom()" style="flex-shrink:0">&#x2795; New Room</button>
       </div>
     </div>
 
@@ -719,6 +720,9 @@
       </ul>
       <div class="help-tip"><strong>Tip</strong>Tap the 🔗 button in the header or <strong>Copy Link</strong> on the People tab to copy your room URL and send it to your group.</div>
       <div class="help-note"><strong>Important</strong>Anyone with the room link can view and edit the data — keep it within your group.</div>
+      <div class="help-h3">Creating a new room</div>
+      <p class="help-p">Tap <strong>＋ New Room</strong> on the People tab to open a brand-new empty room in a new browser tab. Your current room stays open and unaffected.</p>
+      <div class="help-note"><strong>Always bookmark the full URL</strong>The app identifies your room by the <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">#room=abc123</code> part of the URL. If you bookmark or share just the base URL (without the hash), the app will open whichever room was last used on that browser — which may not be the right one. Always save or share the complete link.</div>
     </div>
 
     <!-- Setup -->
@@ -2090,7 +2094,7 @@ function saveGroupName() {
 function updateHeaderName() {
   const name = S.name || '';
   document.getElementById('name-text').textContent = name || 'Tap to add a name';
-  document.title = name ? `Expensplit — ${name}` : 'Expensplit';
+  document.title = name ? `${name} — Expensplit` : 'Expensplit';
 }
 
 // ════════════════════════════════════════════════
@@ -2206,6 +2210,11 @@ function clearQR() {
 // ════════════════════════════════════════════════
 // SHARE URL
 // ════════════════════════════════════════════════
+function newRoom() {
+  const newId = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
+  window.open(location.pathname + '#room=' + newId, '_blank');
+}
+
 function shareURL() {
   const url = location.href.split('#')[0] + '#room=' + ROOM_ID;
   if (navigator.clipboard && navigator.clipboard.writeText) {
