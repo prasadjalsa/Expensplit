@@ -144,7 +144,6 @@
       flex-shrink: 0; user-select: none;
     }
     .avatar-sm { width: 30px; height: 30px; font-size: 11px; }
-    .avatar-xs { width: 24px; height: 24px; font-size: 9px; }
 
     /* ── Buttons ── */
     .btn {
@@ -223,8 +222,6 @@
     }
     .person-item:last-child { border-bottom: none; }
     .person-name { flex: 1; font-weight: 500; font-size: 15px; }
-    .add-row { display: flex; gap: 8px; margin-top: 14px; }
-
     /* ── Expense list ── */
     .expense-card {
       display: flex; align-items: flex-start; gap: 12px;
@@ -260,7 +257,6 @@
     .badge-teal { background: var(--primary-light); color: var(--primary-dark); }
     .badge-gray { background: var(--bg); color: var(--text-muted); }
     .badge-green { background: #c6f6d5; color: #276749; }
-    .badge-red { background: #fed7d7; color: #9b2c2c; }
 
     /* ── Balance ── */
     .balance-item {
@@ -1379,10 +1375,6 @@ function renderAcks() {
           ${action}
         </div>`;
     }).join('')}`;
-}
-
-function addPerson() {
-  openAddPersonModal();
 }
 
 let editingPersonId = null;
