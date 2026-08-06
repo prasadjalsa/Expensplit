@@ -2261,8 +2261,7 @@ groupDoc.get({ source: 'server' })
       S = snap.data().state;
       localStorage.setItem(STORE_KEY, JSON.stringify(S));
     } else {
-      load(); // fall back to localStorage
-      if (S.people.length || S.expenses.length) save(); // migrate existing data up
+      S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
     }
     renderAll();
   })
