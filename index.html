@@ -825,6 +825,7 @@
         <p class="help-p"><span class="badge badge-green">✓ Confirmed</span> — confirmed, no new expenses since.</p>
         <p class="help-p"><span class="badge" style="background:#fefcbf;color:#744210">⚠ N new expenses</span> — confirmed earlier but new expenses were added after. Tap <strong>Re-confirm</strong>.</p>
       </div>
+      <div class="help-tip"><strong>Tip</strong>If you tap <strong>Settle</strong> before everyone has signed off, the app will warn you with a list of members who are still pending or need re-confirmation. You can proceed anyway or go back and wait for them to confirm first.</div>
     </div>
 
     <!-- Settle up -->
@@ -862,6 +863,10 @@
       <p class="help-p">On the <strong>People</strong> tab, tap ✕ next to the person's name. If they appear in any expense you'll be asked to confirm.</p>
       <div class="help-h3">Edit a member's UPI details</div>
       <p class="help-p">On the <strong>People</strong> tab, tap the ✏️ pencil icon next to a member's name. The same Add Member modal opens pre-filled — update the UPI ID or upload a new QR image, then tap <strong>Save Member</strong>.</p>
+      <div class="help-h3">Clear All Data vs Delete Room</div>
+      <p class="help-p"><strong>Clear All Data</strong> — wipes expenses, settlements, and sign-offs but keeps the room alive with all members, group name, and currency intact. The room link still works. Use this to reuse the same group for a new trip.</p>
+      <p class="help-p"><strong>Delete Room</strong> — permanently removes the entire room from Firebase including members, expenses, and the room itself. The room link stops working for everyone. Use this to fully close a room you no longer need.</p>
+      <div class="help-note"><strong>Cannot be undone</strong>Both actions are irreversible. Take a screenshot of Settlement History before proceeding if you need a record.</div>
     </div>
 
     <!-- Reuse -->
@@ -913,7 +918,7 @@
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">What happens when I tap Clear All Data?</div>
-        <div class="faq-a"><p>All expenses, settlements, and sign-offs are permanently deleted from both the browser and Firebase. The group name, member list (including their UPI details), and currency symbol are preserved. This cannot be undone — take a screenshot of the Settlement History first if you need a record.</p></div>
+        <div class="faq-a"><p>Expenses, settlements, and sign-offs are permanently deleted from both the browser and Firebase. The group name, member list (including UPI details), and currency symbol are preserved — the room stays alive and the link still works. This is different from <strong>Delete Room</strong>, which removes everything including members and the room itself. Cannot be undone — take a screenshot of Settlement History first if you need a record.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">Can I use this for multiple trips at once?</div>
