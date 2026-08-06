@@ -1999,6 +1999,15 @@ function renderSettle() {
 // ── Settle modal ─────────────────────────────────
 let settlePayload = {};
 function openSettleModal(fromId, toId, amount) {
+  const pending  = S.people.filter(p => ackStatus(p.id) === 'pending').map(p => p.name);
+  const stale    = S.people.filter(p => ackStatus(p.id) === 'stale').map(p => p.name);
+  if (pending.length || stale.length) {
+    let msg = 'Some members haven\'t signed off yet:\n\n';
+    if (pending.length) msg += `⏳ Not confirmed: ${pending.join(', ')}\n`;
+    if (stale.length)   msg += `⚠️  Need re-confirm: ${stale.join(', ')}\n`;
+    msg += '\nAsk everyone to confirm on the Settle Up tab before settling.\n\nProceed anyway?';
+    if (!confirm(msg)) return;
+  }
   settlePayload = { fromId, toId };
   document.getElementById('settle-form-body').innerHTML = `
     <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:8px 0 20px">
