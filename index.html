@@ -684,6 +684,7 @@
         <a href="#h-multipayer">Multi-payer</a>
         <a href="#h-signoff">Sign-offs</a>
         <a href="#h-settle">Settle up</a>
+        <a href="#h-export">Export CSV</a>
         <a href="#h-share">Share room</a>
         <a href="#h-settings">Settings</a>
         <a href="#h-reuse">Reuse</a>
@@ -826,6 +827,7 @@
         <p class="help-p"><span class="badge" style="background:#fefcbf;color:#744210">⚠ N new expenses</span> — confirmed earlier but new expenses were added after. Tap <strong>Re-confirm</strong>.</p>
       </div>
       <div class="help-tip"><strong>Tip</strong>If you tap <strong>Settle</strong> before everyone has signed off, the app will warn you with a list of members who are still pending or need re-confirmation. You can proceed anyway or go back and wait for them to confirm first.</div>
+      <div class="help-tip"><strong>Tip</strong>Once all members have confirmed, an <strong>Export CSV</strong> button appears on the Settle Up tab so you can download the full expense and settlement history.</div>
     </div>
 
     <!-- Settle up -->
@@ -839,6 +841,22 @@
         <li><div><div class="st">Repeat until all transfers are recorded</div><div class="sd">App shows 🎉 All settled up! when every balance is cleared.</div></div></li>
       </ol>
       <div class="help-tip"><strong>Tip</strong>The smart settlement algorithm minimises transfers. 5 people with complex debts may need only 4 (or fewer) payments to fully balance out.</div>
+    </div>
+
+    <!-- Export CSV -->
+    <div class="card" id="h-export">
+      <div class="help-h2"><span class="help-icon">📥</span>How to: Export CSV</div>
+      <p class="help-p">Once every member has confirmed their sign-off, an <strong>Export CSV</strong> button appears on the Settle Up tab. Tap it to download a spreadsheet with three sections:</p>
+      <table class="help-table">
+        <thead><tr><th>Section</th><th>What's included</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Expenses</strong></td><td>Date, description, amount, split type, who paid, and how it was split per person</td></tr>
+          <tr><td><strong>Balances</strong></td><td>Net balance for each member (positive = gets back, negative = owes)</td></tr>
+          <tr><td><strong>Settlement History</strong></td><td>All recorded payments — from, to, amount, date, and note</td></tr>
+        </tbody>
+      </table>
+      <div class="help-tip"><strong>Tip</strong>The file is named <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">GroupName_expenses.csv</code> and opens in Excel, Google Sheets, or Numbers.</div>
+      <div class="help-note"><strong>Note</strong>The Export button only appears when <em>all</em> members have confirmed sign-offs. If it's not visible, check the Sign-offs card at the top of the Settle Up tab for anyone still pending.</div>
     </div>
 
     <!-- Share room -->
