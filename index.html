@@ -839,6 +839,7 @@
         <li><strong>Activity log</strong> — full history of who added, edited, or deleted expenses</li>
         <li><strong>Notifications</strong> — get notified when expenses involving you change</li>
         <li><strong>Works like an app</strong> — add to your home screen on Android or iPhone</li>
+        <li><strong>Swipe between tabs</strong> — swipe left or right on the screen to move between sections</li>
       </ul>
     </div>
 
@@ -997,6 +998,7 @@
         <li><div><div class="st">Repeat for each payment</div><div class="sd">When all balances are cleared, the app shows 🎉 All settled up!</div></div></li>
       </ol>
       <div class="help-tip"><strong>Tip</strong>The app works out the minimum number of payments — 5 people with tangled debts might need just 4 transfers.</div>
+      <div class="help-tip"><strong>Progress bar</strong>At the top of the Settle Up tab, a progress bar shows how many of the required payments have been recorded — e.g. "2 of 3 payments done". It turns green when everything is cleared. 🎉</div>
       <div class="help-tip"><strong>Paying in instalments?</strong>You can enter less than the full amount when recording a payment. The settle form shows how much has already been paid and how much is still remaining for that pair.</div>
       <div class="help-tip"><strong>Made a mistake?</strong>In the Settlement History section, tap ✏️ next to any recorded payment to edit it, or ✕ to delete it.</div>
     </div>
@@ -1062,7 +1064,7 @@
       <p class="help-p">On the People tab, tap ✏️ next to their name to update their UPI ID or QR code.</p>
       <div class="help-h3">Clear All Data vs Delete Room</div>
       <p class="help-p"><strong>Clear All Data</strong> — removes all expenses, payments, and sign-offs but keeps the group members, name, and currency. The room link still works. Good for starting a new trip with the same group.</p>
-      <p class="help-p"><strong>Delete Room</strong> — permanently removes everything, including members and the room itself. The link stops working for everyone. Use this when the room is no longer needed.</p>
+      <p class="help-p"><strong>Delete Room</strong> — permanently removes everything, including members and the room itself. The link stops working for everyone. This is a two-step process — you'll be asked to save a copy of the data first, confirm all members have been informed, and type DELETE before it goes through.</p>
       <div class="help-note"><strong>Both actions cannot be undone.</strong> Export a CSV or take a screenshot first if you want a record.</div>
     </div>
 
@@ -2483,20 +2485,28 @@ function renderSettle() {
   // ── Progress bar — only when group has people and expenses ──
   let html = '';
   if (S.people.length > 0 && S.expenses.length > 0) {
-    const totalOwed = S.expenses.reduce((s, e) => s + e.amount, 0);
-    const totalSettled = S.settlements.reduce((s, x) => s + x.amount, 0);
-    const pct = totalOwed > 0 ? Math.min(100, (totalSettled / totalOwed) * 100) : 0;
+    // Calculate original required settlements (before any payments)
+    const netBeforeSettlements = {};
+    S.people.forEach(p => { netBeforeSettlements[p.id] = 0; });
+    S.expenses.forEach(e => {
+      e.payers.forEach(p => { if (p.personId in netBeforeSettlements) netBeforeSettlements[p.personId] += p.amount; });
+      e.splits.forEach(s => { if (s.personId in netBeforeSettlements) netBeforeSettlements[s.personId] -= s.amount; });
+    });
+    const totalRequired = minSettlements({ ...netBeforeSettlements }).length;
+    const totalRemaining = txns.length;
+    const totalDone = Math.max(0, totalRequired - totalRemaining);
+    const pct = totalRequired > 0 ? Math.min(100, (totalDone / totalRequired) * 100) : 100;
     const allDone = txns.length === 0;
     html += `<div class="card">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
         <div style="font-size:13px;font-weight:600">Settlement Progress</div>
-        <div style="font-size:12px;color:var(--text-muted)">${S.currency}${fmt(totalSettled)} of ${S.currency}${fmt(totalOwed)} settled</div>
+        <div style="font-size:12px;color:var(--text-muted)">${totalDone} of ${totalRequired} payment${totalRequired !== 1 ? 's' : ''} done</div>
       </div>
       <div class="progress-wrap">
         <div class="progress-fill" style="width:${pct.toFixed(1)}%;background:${allDone ? 'var(--success)' : 'var(--primary)'}"></div>
       </div>
       <div style="font-size:11px;color:${allDone ? 'var(--success)' : 'var(--text-muted)'};font-weight:600;margin-top:4px">
-        ${allDone ? '✓ All settled up!' : `${pct.toFixed(0)}% settled${txns.length ? ` · ${txns.length} payment${txns.length > 1 ? 's' : ''} remaining` : ''}`}
+        ${allDone ? '✓ All settled up!' : `${totalRemaining} payment${totalRemaining > 1 ? 's' : ''} remaining`}
       </div>
     </div>`;
   }
