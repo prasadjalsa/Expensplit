@@ -1063,6 +1063,7 @@
         <li><div><div class="st">Tap "Add to Home Screen"</div><div class="sd">The app icon appears on your home screen and opens fullscreen.</div></div></li>
       </ol>
       <div class="help-note"><strong>Note</strong>On iPhones, you must use Safari — the install option is not available in Chrome or other browsers on iOS.</div>
+      <div class="help-note"><strong>First launch after installing</strong>The installed app has its own separate storage from Safari. On first open you'll be asked to paste your room link — copy the full link from Safari first, then install and paste it when prompted.</div>
     </div>
 
     <!-- Reuse -->
@@ -1413,6 +1414,22 @@ function getRoomId() {
   if (stored) {
     history.replaceState(null, '', location.pathname + location.search + '#room=' + stored);
     return stored;
+  }
+  // Running as standalone PWA with no room — prompt for room link
+  const isStandalone = window.navigator.standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches;
+  if (isStandalone) {
+    const link = prompt(
+      'Welcome to Expensplit!\n\nPaste your room link (or the room code) to join your group.\n\nLeave blank to start a new room.'
+    );
+    if (link && link.trim()) {
+      const extracted = (link.match(/[#&]room=([^&]+)/) || [])[1] || link.trim();
+      if (extracted) {
+        localStorage.setItem('expensplit_room', extracted);
+        history.replaceState(null, '', location.pathname + '#room=' + extracted);
+        return extracted;
+      }
+    }
   }
   const fresh = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
   localStorage.setItem('expensplit_room', fresh);
