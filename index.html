@@ -31,34 +31,36 @@
       --radius-sm: 8px;
     }
     body.dark {
-      --primary: #5bc5a7;
-      --primary-dark: #3da88a;
-      --primary-light: #1a3530;
-      --danger: #fc8181;
-      --danger-light: #2d1a1a;
-      --success: #68d391;
-      --success-light: #1a2d1f;
-      --warning: #f6ad55;
-      --bg: #1a202c;
-      --card: #2d3748;
-      --text: #f7fafc;
-      --text-muted: #a0aec0;
-      --border: #4a5568;
-      --shadow: 0 2px 8px rgba(0,0,0,0.3);
-      --shadow-lg: 0 8px 30px rgba(0,0,0,0.5);
+      --primary: #4ade80;
+      --primary-dark: #22c55e;
+      --primary-light: #052e16;
+      --danger: #f87171;
+      --danger-light: #1c0a0a;
+      --success: #4ade80;
+      --success-light: #052e16;
+      --warning: #fbbf24;
+      --bg: #000000;
+      --card: #0f0f0f;
+      --text: #f0fdf4;
+      --text-muted: #86efac;
+      --border: #1a2e1a;
+      --shadow: 0 2px 8px rgba(0,0,0,0.6);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.8);
     }
     body.dark .input,
     body.dark .payer-select,
     body.dark .filter-select,
     body.dark .split-input,
-    body.dark .payer-amount-input { background: #3a4556; color: var(--text); border-color: var(--border); }
+    body.dark .payer-amount-input { background: #1a1a1a; color: var(--text); border-color: var(--border); }
     body.dark .tabs { background: var(--card); }
     body.dark .modal,
-    body.dark .modal-center { background: var(--card); }
-    body.dark .icon-btn { background: var(--bg); border-color: var(--border); }
+    body.dark .modal-center { background: #0f0f0f; }
+    body.dark .icon-btn { background: #1a1a1a; border-color: var(--border); }
     body.dark .qr-upload-area { border-color: var(--border); }
-    body.dark .help-table th { background: var(--primary-light); }
-    body.dark .help-note { background: #2d2a1a; border-color: #f6e05e; color: #fefcbf; }
+    body.dark .help-table th { background: #052e16; color: #4ade80; }
+    body.dark .help-note { background: #1a1400; border-color: #fbbf24; color: #fef08a; }
+    body.dark .split-tab.active { background: #1a2e1a; color: var(--primary); }
+    body.dark .header { box-shadow: 0 2px 12px rgba(74,222,128,0.2); }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -931,7 +933,7 @@
         <p class="help-p"><span class="badge" style="background:#fefcbf;color:#744210">⚠ Expenses changed</span> — confirmed earlier but the expense list changed since. Tap <strong>Re-confirm</strong>.</p>
       </div>
       <div class="help-tip"><strong>Tip</strong>If you tap Settle before everyone has confirmed, the app shows a warning listing who still needs to sign off. You can still proceed if needed.</div>
-      <div class="help-tip"><strong>Tip</strong>Once everyone confirms, an <strong>Export CSV</strong> button appears so you can save a copy of everything.</div>
+      <div class="help-tip"><strong>Tip</strong>Once everyone confirms, <strong>Export CSV</strong> and <strong>Print / PDF</strong> buttons appear so you can save a copy of everything.</div>
     </div>
 
     <!-- Settle up -->
@@ -945,22 +947,22 @@
         <li><div><div class="st">Repeat for each payment</div><div class="sd">When all balances are cleared, the app shows 🎉 All settled up!</div></div></li>
       </ol>
       <div class="help-tip"><strong>Tip</strong>The app works out the minimum number of payments — 5 people with tangled debts might need just 4 transfers.</div>
+      <div class="help-tip"><strong>Paying in instalments?</strong>You can enter less than the full amount when recording a payment. The settle form shows how much has already been paid and how much is still remaining for that pair.</div>
       <div class="help-tip"><strong>Made a mistake?</strong>In the Settlement History section, tap ✏️ next to any recorded payment to edit it, or ✕ to delete it.</div>
     </div>
 
     <!-- Export CSV -->
     <div class="card" id="h-export">
-      <div class="help-h2"><span class="help-icon">📥</span>Exporting to CSV</div>
-      <p class="help-p">Once everyone has signed off, an <strong>Export CSV</strong> button appears on the Settle Up tab. Tap it to download a spreadsheet you can open in Excel, Google Sheets, or Numbers.</p>
+      <div class="help-h2"><span class="help-icon">📥</span>Exporting &amp; Printing</div>
+      <p class="help-p">Once everyone has signed off, two buttons appear on the Settle Up tab:</p>
       <table class="help-table">
-        <thead><tr><th>Section in the file</th><th>What's in it</th></tr></thead>
+        <thead><tr><th>Button</th><th>What it does</th></tr></thead>
         <tbody>
-          <tr><td><strong>Expenses</strong></td><td>Every expense — date, description, amount, who paid, how it was split</td></tr>
-          <tr><td><strong>Balances</strong></td><td>How much each person gets back or owes overall</td></tr>
-          <tr><td><strong>Settlement History</strong></td><td>All payments recorded in the app</td></tr>
+          <tr><td><strong>🖨️ Print / PDF</strong></td><td>Opens a clean printable summary in a new tab. Use your browser's Save as PDF to save it. Works on all devices including iPhone (Share → Print → Save to Files).</td></tr>
+          <tr><td><strong>📥 Export CSV</strong></td><td>Downloads a spreadsheet with three sections — Expenses, Balances, and Payment History. Opens in Excel, Google Sheets, or Numbers.</td></tr>
         </tbody>
       </table>
-      <div class="help-note"><strong>Not seeing the button?</strong>It only appears when everyone has confirmed their sign-off. Check the Sign-offs card at the top of the Settle Up tab.</div>
+      <div class="help-note"><strong>Not seeing the buttons?</strong>They only appear when everyone has confirmed their sign-off. Check the Sign-offs card at the top of the Settle Up tab.</div>
     </div>
 
     <!-- Share room -->
@@ -995,7 +997,7 @@
     <div class="card" id="h-darkmode">
       <div class="help-h2"><span class="help-icon">🌙</span>Dark Mode</div>
       <p class="help-p">Tap 🌙 in the header to switch to dark mode. Tap ☀️ to go back. Your choice is remembered every time you open the app.</p>
-      <div class="help-tip"><strong>Tip</strong>The app automatically matches your phone's dark/light setting on the first visit.</div>
+      <div class="help-tip"><strong>Tip</strong>The app automatically matches your phone's dark/light setting on the first visit. You can override it any time using the toggle.</div>
     </div>
 
     <!-- PWA / Install -->
@@ -1021,7 +1023,7 @@
       <div class="help-h2"><span class="help-icon">🔄</span>Reusing for a new trip</div>
       <ol class="help-steps">
         <li><div><div class="st">Record all payments first</div><div class="sd">Go to Settle Up and tap Settle on every suggested transfer so nothing is lost.</div></div></li>
-        <li><div><div class="st">Export a CSV if you want a record</div><div class="sd">Once everyone has signed off, tap Export CSV on the Settle Up tab.</div></div></li>
+        <li><div><div class="st">Export or print a summary if you want a record</div><div class="sd">Once everyone has signed off, tap <strong>Export CSV</strong> or <strong>Print / PDF</strong> on the Settle Up tab.</div></div></li>
         <li><div><div class="st">Open Settings ⚙️ and tap Clear All Data</div><div class="sd">All expenses and payments are removed. Members, group name, and currency stay.</div></div></li>
         <li><div><div class="st">Rename the group</div><div class="sd">Tap the name in the header and type the new trip name.</div></div></li>
         <li><div><div class="st">Start adding new expenses</div><div class="sd">Same room link — no need to share it again.</div></div></li>
@@ -2106,7 +2108,41 @@ function renderBalances() {
   const rows = S.people.map(p => ({ ...p, bal: net[p.id] || 0 }));
   const txns = minSettlements({ ...net });
 
+  // ── Summary card ──────────────────────────────
+  const totalSpend = S.expenses.reduce((s, e) => s + e.amount, 0);
+  const avgSpend = S.people.length ? totalSpend / S.people.length : 0;
+  const largest = S.expenses.length
+    ? S.expenses.reduce((a, b) => b.amount > a.amount ? b : a)
+    : null;
+  const totalSettled = S.settlements.reduce((s, x) => s + x.amount, 0);
+
   let html = `<div class="card">
+    <div class="card-title">Group Summary</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:var(--bg);border-radius:10px;padding:12px">
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Total Spent</div>
+        <div style="font-size:20px;font-weight:700;color:var(--text)">${S.currency}${fmt(totalSpend)}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${S.expenses.length} expense${S.expenses.length !== 1 ? 's' : ''}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px">
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Per Person</div>
+        <div style="font-size:20px;font-weight:700;color:var(--text)">${S.currency}${fmt(avgSpend)}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">avg across ${S.people.length} members</div>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px">
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Largest Expense</div>
+        <div style="font-size:20px;font-weight:700;color:var(--text)">${largest ? S.currency + fmt(largest.amount) : '—'}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${largest ? esc(largest.desc) : 'No expenses yet'}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px">
+        <div style="font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Settled</div>
+        <div style="font-size:20px;font-weight:700;color:var(--success)">${S.currency}${fmt(totalSettled)}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${S.settlements.length} payment${S.settlements.length !== 1 ? 's' : ''} recorded</div>
+      </div>
+    </div>
+  </div>`;
+
+  html += `<div class="card">
     <div class="card-title">Individual Balances</div>
     ${rows.map(p => `
       <div class="balance-item">
@@ -2203,6 +2239,14 @@ function renderSettle() {
             ${avatarHtml(t.to, 'avatar-sm')}
             <div style="text-align:right;margin-left:auto">
               <div class="settle-amount">${S.currency}${fmt(t.amount)}</div>
+              ${(() => {
+                const paid = S.settlements
+                  .filter(s => s.fromPersonId === t.from && s.toPersonId === t.to)
+                  .reduce((sum, s) => sum + s.amount, 0);
+                return paid > 0
+                  ? `<div style="font-size:11px;color:var(--success);font-weight:600;margin-top:2px">✓ ${S.currency}${fmt(paid)} paid</div>`
+                  : '';
+              })()}
               <button class="btn btn-primary btn-sm" style="margin-top:5px"
                 onclick="openSettleModal('${t.from}','${t.to}',${t.amount})">Settle</button>
             </div>
@@ -2230,12 +2274,15 @@ function renderSettle() {
   const allConfirmed = S.people.length > 0 && S.people.every(p => ackStatus(p.id) === 'confirmed');
   if (allConfirmed) {
     html += `<div class="card" style="border:1.5px solid #b2e8d8;background:var(--primary-light)">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
         <div>
           <div class="card-title" style="margin-bottom:3px">&#x2705; All signed off</div>
-          <p style="font-size:12px;color:var(--text-muted);line-height:1.5">Everyone has confirmed the expense list. Export a CSV for your records.</p>
+          <p style="font-size:12px;color:var(--text-muted);line-height:1.5">Everyone has confirmed the expense list. Export or print a summary for your records.</p>
         </div>
-        <button class="btn btn-primary btn-sm" style="flex-shrink:0" onclick="exportCSV()">&#x1f4e5; Export CSV</button>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+          <button class="btn btn-ghost btn-sm" onclick="printSummary()">&#x1f5a8;&#xfe0f; Print / PDF</button>
+          <button class="btn btn-primary btn-sm" onclick="exportCSV()">&#x1f4e5; Export CSV</button>
+        </div>
       </div>
     </div>`;
   }
@@ -2304,10 +2351,17 @@ function proceedSettle() {
 function openSettleForm(fromId, toId, amount, editId = null) {
   settlePayload = { fromId, toId, editId };
   const existing = editId ? S.settlements.find(s => s.id === editId) : null;
+
+  // Calculate how much has already been paid for this pair
+  const alreadyPaid = !editId ? S.settlements
+    .filter(s => s.fromPersonId === fromId && s.toPersonId === toId)
+    .reduce((sum, s) => sum + s.amount, 0) : 0;
+  const remaining = +(amount - alreadyPaid).toFixed(2);
+
   document.getElementById('settle-modal').querySelector('.modal-title').textContent =
     editId ? 'Edit Payment' : 'Record Payment';
   document.getElementById('settle-form-body').innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:8px 0 20px">
+    <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:8px 0 ${alreadyPaid > 0 ? '10px' : '20px'}">
       <div style="text-align:center">
         ${avatarHtml(fromId)}
         <div style="font-size:12px;font-weight:600;margin-top:5px">${esc(personName(fromId))}</div>
@@ -2318,13 +2372,18 @@ function openSettleForm(fromId, toId, amount, editId = null) {
         <div style="font-size:12px;font-weight:600;margin-top:5px">${esc(personName(toId))}</div>
       </div>
     </div>
+    ${alreadyPaid > 0 ? `
+    <div style="background:var(--success-light);border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:12px;color:var(--success);font-weight:500">
+      ✓ ${S.currency}${fmt(alreadyPaid)} already paid &nbsp;·&nbsp; ${S.currency}${fmt(remaining)} remaining
+    </div>` : ''}
     <div class="form-group">
       <label class="form-label">Amount</label>
       <div class="input-prefix-wrap">
         <span class="input-prefix">${esc(S.currency)}</span>
         <input type="number" id="s-amount" class="input input-with-prefix"
-          value="${existing ? fmt(existing.amount) : fmt(amount)}" min="0" step="0.01">
+          value="${existing ? fmt(existing.amount) : fmt(remaining > 0 ? remaining : amount)}" min="0" step="0.01">
       </div>
+      ${alreadyPaid > 0 && !editId ? `<div class="hint" style="margin-top:4px">Full remaining: ${S.currency}${fmt(remaining)} — enter less to pay partially</div>` : ''}
     </div>
     <div class="form-group">
       <label class="form-label">Date</label>
@@ -2589,6 +2648,97 @@ function clearQR() {
 // ════════════════════════════════════════════════
 // SHARE URL
 // ════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// PRINT / PDF SUMMARY
+// ════════════════════════════════════════════════
+function printSummary() {
+  const net = calcNet();
+  const txns = minSettlements({ ...net });
+  const groupName = S.name || 'Expensplit';
+  const totalSpend = S.expenses.reduce((s, e) => s + e.amount, 0);
+
+  const expenseRows = [...S.expenses]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(e => {
+      const paidBy = e.payers.map(p => `${personName(p.personId)} (${S.currency}${fmt(p.amount)})`).join(', ');
+      return `<tr>
+        <td>${fmtDate(e.date)}</td>
+        <td>${esc(e.desc)}</td>
+        <td style="text-align:right">${S.currency}${fmt(e.amount)}</td>
+        <td>${esc(paidBy)}</td>
+        <td>${e.splits.map(s => `${personName(s.personId)}: ${S.currency}${fmt(s.amount)}`).join('<br>')}</td>
+      </tr>`;
+    }).join('');
+
+  const balanceRows = S.people.map(p => {
+    const bal = net[p.id] || 0;
+    const color = bal > 0.005 ? '#38a169' : bal < -0.005 ? '#e05c4b' : '#718096';
+    const label = Math.abs(bal) < 0.005 ? 'Settled' : bal > 0 ? `Gets back ${S.currency}${fmt(bal)}` : `Owes ${S.currency}${fmt(Math.abs(bal))}`;
+    return `<tr><td>${esc(p.name)}</td><td style="color:${color};font-weight:600">${label}</td></tr>`;
+  }).join('');
+
+  const settlementRows = txns.map(t =>
+    `<tr><td>${esc(personName(t.from))}</td><td>→</td><td>${esc(personName(t.to))}</td><td style="text-align:right;font-weight:600">${S.currency}${fmt(t.amount)}</td></tr>`
+  ).join('');
+
+  const historyRows = [...S.settlements]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(s => `<tr>
+      <td>${fmtDate(s.date)}</td>
+      <td>${esc(personName(s.fromPersonId))}</td>
+      <td>→</td>
+      <td>${esc(personName(s.toPersonId))}</td>
+      <td style="text-align:right">${S.currency}${fmt(s.amount)}</td>
+      <td>${esc(s.note || '')}</td>
+    </tr>`).join('');
+
+  const css = `
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #2d3748; padding: 32px; max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 24px; margin: 0 0 4px; }
+    .sub { color: #718096; font-size: 13px; margin-bottom: 24px; }
+    h2 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #718096; margin: 24px 0 10px; border-top: 1px solid #e2e8f0; padding-top: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #e8f8f4; padding: 7px 10px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #3da88a; }
+    td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    .summary { display: flex; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+    .stat { background: #f0f4f8; border-radius: 8px; padding: 12px 16px; min-width: 120px; }
+    .stat-label { font-size: 11px; color: #718096; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+    .stat-value { font-size: 20px; font-weight: 700; margin-top: 2px; }
+    @media print { body { padding: 16px; } }
+  `;
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <title>${esc(groupName)} — Expense Summary</title>
+    <style>${css}</style></head><body>
+    <h1>${esc(groupName)}</h1>
+    <div class="sub">Expense summary · Printed ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+    <div class="summary">
+      <div class="stat"><div class="stat-label">Total Spent</div><div class="stat-value">${S.currency}${fmt(totalSpend)}</div></div>
+      <div class="stat"><div class="stat-label">Expenses</div><div class="stat-value">${S.expenses.length}</div></div>
+      <div class="stat"><div class="stat-label">Members</div><div class="stat-value">${S.people.length}</div></div>
+      <div class="stat"><div class="stat-label">Per Person (avg)</div><div class="stat-value">${S.currency}${fmt(S.people.length ? totalSpend / S.people.length : 0)}</div></div>
+    </div>
+    <h2>Expenses</h2>
+    <table><thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Paid by</th><th>Split</th></tr></thead>
+    <tbody>${expenseRows}</tbody></table>
+    <h2>Balances</h2>
+    <table><thead><tr><th>Person</th><th>Status</th></tr></thead>
+    <tbody>${balanceRows}</tbody></table>
+    ${txns.length ? `<h2>Suggested Settlements</h2>
+    <table><thead><tr><th>From</th><th></th><th>To</th><th>Amount</th></tr></thead>
+    <tbody>${settlementRows}</tbody></table>` : ''}
+    ${S.settlements.length ? `<h2>Payment History</h2>
+    <table><thead><tr><th>Date</th><th>From</th><th></th><th>To</th><th>Amount</th><th>Note</th></tr></thead>
+    <tbody>${historyRows}</tbody></table>` : ''}
+  </body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.write(html);
+  w.document.close();
+  w.onload = () => { w.focus(); w.print(); };
+}
+
 // ════════════════════════════════════════════════
 // EXPORT CSV
 // ════════════════════════════════════════════════
