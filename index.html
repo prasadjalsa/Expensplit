@@ -922,7 +922,7 @@
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">Can I use this for multiple trips at once?</div>
-        <div class="faq-a"><p>Yes — each unique room link is a separate workspace. Open the app in a fresh browser tab (without a room hash in the URL) to generate a new room, then share that link for a different group or trip.</p></div>
+        <div class="faq-a"><p>Yes — each room is a separate workspace. Tap <strong>＋ New Room</strong> on the People tab to open a fresh room in a new browser tab. Share that room's link with the relevant group. Always bookmark or share the full URL including the <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">#room=</code> part so everyone lands in the right room.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">How many people can be in a group?</div>
@@ -2009,6 +2009,20 @@ function renderSettle() {
     </div></div>`;
   }
 
+  // Export CSV — only when all members confirmed
+  const allConfirmed = S.people.length > 0 && S.people.every(p => ackStatus(p.id) === 'confirmed');
+  if (allConfirmed) {
+    html += `<div class="card" style="border:1.5px solid #b2e8d8;background:var(--primary-light)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <div class="card-title" style="margin-bottom:3px">&#x2705; All signed off</div>
+          <p style="font-size:12px;color:var(--text-muted);line-height:1.5">Everyone has confirmed the expense list. Export a CSV for your records.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" style="flex-shrink:0" onclick="exportCSV()">&#x1f4e5; Export CSV</button>
+      </div>
+    </div>`;
+  }
+
   if (S.settlements.length) {
     const sorted = [...S.settlements].sort((a, b) => b.date.localeCompare(a.date));
     html += `<div class="card">
@@ -2306,6 +2320,54 @@ function clearQR() {
 // ════════════════════════════════════════════════
 // SHARE URL
 // ════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// EXPORT CSV
+// ════════════════════════════════════════════════
+function exportCSV() {
+  const q = v => `"${String(v || '').replace(/"/g, '""')}"`;
+  const rows = [];
+
+  // Expenses sheet
+  rows.push(['EXPENSES']);
+  rows.push(['Date', 'Description', 'Amount', 'Split Type', 'Paid By', 'Split Among']);
+  S.expenses.forEach(e => {
+    const paidBy = e.payers.map(p => `${personName(p.personId)} (${S.currency}${fmt(p.amount)})`).join('; ');
+    const splitAmong = e.splits.map(s => `${personName(s.personId)} (${S.currency}${fmt(s.amount)})`).join('; ');
+    rows.push([fmtDate(e.date), e.desc, e.amount, e.splitType, paidBy, splitAmong]);
+  });
+
+  rows.push([]);
+
+  // Balances sheet
+  rows.push(['BALANCES']);
+  rows.push(['Person', 'Net Balance']);
+  const net = calcNet();
+  S.people.forEach(p => {
+    rows.push([p.name, (net[p.id] || 0).toFixed(2)]);
+  });
+
+  rows.push([]);
+
+  // Settlements sheet
+  rows.push(['SETTLEMENT HISTORY']);
+  rows.push(['Date', 'From', 'To', 'Amount', 'Note']);
+  const sorted = [...S.settlements].sort((a, b) => a.date.localeCompare(b.date));
+  sorted.forEach(s => {
+    rows.push([fmtDate(s.date), personName(s.fromPersonId), personName(s.toPersonId), s.amount.toFixed(2), s.note || '']);
+  });
+
+  const csv = rows.map(r => r.map(q).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const name = (S.name || 'Expensplit').replace(/[^a-z0-9]/gi, '_');
+  a.href = url; a.download = `${name}_expenses.csv`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('CSV exported!');
+}
+
 function newRoom() {
   const newId = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
   window.open(location.pathname + '#room=' + newId, '_blank');
