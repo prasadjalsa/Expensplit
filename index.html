@@ -61,6 +61,11 @@
     body.dark .help-note { background: #1a1400; border-color: #fcd34d; color: #fef08a; }
     body.dark .split-tab.active { background: #0c1a2e; color: var(--primary); }
     body.dark .header { box-shadow: 0 2px 12px rgba(147,197,253,0.15); }
+    body.dark .badge-teal { background: #0c1a2e; color: #93c5fd; }
+    body.dark .badge-gray { background: #1a2332; color: #94a3b8; }
+    body.dark .badge-green { background: #052e1a; color: #6ee7b7; }
+    body.dark .expense-desc { color: var(--text); }
+    body.dark .expense-icon { background: #1a2332; }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -263,7 +268,7 @@
     .expense-card {
       display: flex; align-items: flex-start; gap: 12px;
       padding: 14px 16px;
-      background: white;
+      background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       margin-bottom: 10px;
