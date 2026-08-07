@@ -445,6 +445,21 @@
     }
     .fab:hover { transform: scale(1.07); }
 
+    /* ── Progress bar ── */
+    .progress-wrap {
+      background: var(--border);
+      border-radius: 99px;
+      height: 8px;
+      overflow: hidden;
+      margin: 10px 0 4px;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--primary);
+      transition: width 0.4s ease;
+    }
+
     /* ── Divider ── */
     .divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
 
@@ -2426,10 +2441,32 @@ function renderSettle() {
   }
   const net = calcNet();
   const txns = minSettlements({ ...net });
+
+  // ── Progress bar — only when group has people and expenses ──
   let html = '';
+  if (S.people.length > 0 && S.expenses.length > 0) {
+    const totalOwed = S.expenses.reduce((s, e) => s + e.amount, 0);
+    const totalSettled = S.settlements.reduce((s, x) => s + x.amount, 0);
+    const pct = totalOwed > 0 ? Math.min(100, (totalSettled / totalOwed) * 100) : 0;
+    const allDone = txns.length === 0;
+    html += `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px">
+        <div style="font-size:13px;font-weight:600">Settlement Progress</div>
+        <div style="font-size:12px;color:var(--text-muted)">${S.currency}${fmt(totalSettled)} of ${S.currency}${fmt(totalOwed)} settled</div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-fill" style="width:${pct.toFixed(1)}%;background:${allDone ? 'var(--success)' : 'var(--primary)'}"></div>
+      </div>
+      <div style="font-size:11px;color:${allDone ? 'var(--success)' : 'var(--text-muted)'};font-weight:600;margin-top:4px">
+        ${allDone ? '✓ All settled up!' : `${pct.toFixed(0)}% settled${txns.length ? ` · ${txns.length} payment${txns.length > 1 ? 's' : ''} remaining` : ''}`}
+      </div>
+    </div>`;
+  }
+
+  let html2 = '';
 
   if (txns.length) {
-    html += `<div class="card">
+    html2 += `<div class="card">
       <div class="card-title">Suggested Settlements</div>
       <p class="hint" style="margin-bottom:14px">
         Minimum <strong>${txns.length}</strong> transaction${txns.length > 1 ? 's' : ''} to clear all debts
@@ -2484,7 +2521,7 @@ function renderSettle() {
       }).join('')}
     </div>`;
   } else {
-    html += `<div class="card"><div class="empty" style="padding:20px 0">
+    html2 += `<div class="card"><div class="empty" style="padding:20px 0">
       <div class="empty-icon">&#x1f389;</div>
       <h3>All settled up!</h3>
       <p>No outstanding balances</p>
@@ -2501,7 +2538,7 @@ function renderSettle() {
   // Export CSV — only when all members confirmed
   const allConfirmed = S.people.length > 0 && S.people.every(p => ackStatus(p.id) === 'confirmed');
   if (allConfirmed) {
-    html += `<div class="card" style="border:1.5px solid #b2e8d8;background:var(--primary-light)">
+    html2 += `<div class="card" style="border:1.5px solid #b2e8d8;background:var(--primary-light)">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
         <div>
           <div class="card-title" style="margin-bottom:3px">&#x2705; All signed off</div>
@@ -2517,7 +2554,7 @@ function renderSettle() {
 
   if (S.settlements.length) {
     const sorted = [...S.settlements].sort((a, b) => b.date.localeCompare(a.date));
-    html += `<div class="card">
+    html2 += `<div class="card">
       <div class="card-title">Settlement History</div>
       ${sorted.map(s => `
         <div class="settle-item">
@@ -2532,7 +2569,7 @@ function renderSettle() {
         </div>`).join('')}
     </div>`;
   }
-  el.innerHTML = html;
+  el.innerHTML = html + html2;
 }
 
 // ── Settle modal ─────────────────────────────────
@@ -3497,6 +3534,28 @@ groupDoc.get({ source: 'server' })
     maybeShowPwaRoomModal();
     maybePromptIdentity();
   });
+
+// ════════════════════════════════════════════════
+// SWIPE TO SWITCH TABS
+// ════════════════════════════════════════════════
+(function() {
+  let startX = 0, startY = 0;
+  const content = document.querySelector('.content');
+  content.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  content.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    // Only trigger on clearly horizontal swipes (dx > 60, dy < 40)
+    if (Math.abs(dx) < 60 || Math.abs(dy) > 40) return;
+    const cur = TAB_IDS.indexOf(TAB_IDS.find(id =>
+      document.getElementById('sec-' + id)?.classList.contains('active')));
+    if (dx < 0 && cur < TAB_IDS.length - 1) switchTab(TAB_IDS[cur + 1]); // swipe left → next
+    if (dx > 0 && cur > 0) switchTab(TAB_IDS[cur - 1]);                   // swipe right → prev
+  }, { passive: true });
+})();
 
 // ════════════════════════════════════════════════
 // PWA — Service Worker + Install Prompt
