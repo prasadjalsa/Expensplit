@@ -748,8 +748,8 @@
 
     <!-- Quick nav -->
     <div class="card">
-      <div class="help-h2"><span class="help-icon">📖</span>Documentation</div>
-      <p class="help-p" style="margin-bottom:12px">Quick links to every topic:</p>
+      <div class="help-h2"><span class="help-icon">📖</span>Help</div>
+      <p class="help-p" style="margin-bottom:12px">Jump to any topic:</p>
       <div class="help-toc">
         <a href="#h-overview">Overview</a>
         <a href="#h-rooms">Rooms</a>
@@ -774,93 +774,85 @@
 
     <!-- Overview -->
     <div class="card" id="h-overview">
-      <div class="help-h2"><span class="help-icon">💡</span>What is ExpenSplit?</div>
-      <p class="help-p">ExpenSplit is a group expense tracker — for trips, flatmates, events, or any shared spending. It works like Splitwise but lives in a single HTML file you host on GitHub Pages.</p>
+      <div class="help-h2"><span class="help-icon">💡</span>What is Expensplit?</div>
+      <p class="help-p">Expensplit helps groups track shared spending — trips, flatmates, events, dinners. Add expenses, see who owes what, and settle up with the fewest possible payments. No account needed.</p>
       <ul style="font-size:13px;color:var(--text-muted);padding-left:18px;line-height:1.7">
-        <li><strong>No sign-up</strong> — access is controlled by a room link</li>
-        <li><strong>Real-time sync</strong> — all members see changes instantly via Firebase</li>
-        <li><strong>Flexible splits</strong> — equal, unequal, %, or share-based</li>
+        <li><strong>No sign-up</strong> — just share the room link with your group</li>
+        <li><strong>Everyone sees the same data</strong> — changes show up instantly for all members</li>
+        <li><strong>Flexible splits</strong> — equal, unequal, by % or by shares</li>
         <li><strong>Smart settlements</strong> — fewest possible transfers to clear all debts</li>
-        <li><strong>Sign-off flow</strong> — each member acknowledges expenses before settling</li>
-        <li><strong>Category icons</strong> — auto-suggested or manually picked per expense</li>
+        <li><strong>Sign-off flow</strong> — everyone confirms the list before settling</li>
+        <li><strong>Category icons</strong> — auto-picked or chosen manually per expense</li>
         <li><strong>Filter &amp; sort</strong> — search, filter by person, sort by date or amount</li>
-        <li><strong>CSV export</strong> — download full expense and settlement history</li>
-        <li><strong>Dark mode</strong> — follows system preference, toggle in header</li>
-        <li><strong>Installable</strong> — add to home screen on Android and iOS</li>
+        <li><strong>CSV export</strong> — download the full expense and payment history</li>
+        <li><strong>Dark mode</strong> — easy on the eyes, follows your phone's setting</li>
+        <li><strong>Works like an app</strong> — add to your home screen on Android or iPhone</li>
       </ul>
     </div>
 
     <!-- Rooms -->
     <div class="card" id="h-rooms">
       <div class="help-h2"><span class="help-icon">🔗</span>Rooms &amp; Sharing</div>
-      <p class="help-p">A <strong>room</strong> is a private shared workspace for your group. Every expense, balance, and settlement lives inside one room.</p>
+      <p class="help-p">A <strong>room</strong> is your group's private space. All expenses, balances, and payments live inside it. Everyone who opens the same link sees the same data — live.</p>
       <ul style="font-size:13px;color:var(--text-muted);padding-left:18px;line-height:1.7;margin-bottom:10px">
-        <li>A random <strong>Room ID</strong> is created automatically when you first open the app</li>
-        <li>The Room ID appears in the URL as <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">#room=abc123xyz</code> and on this page</li>
-        <li>Anyone who opens the same URL joins the same live room</li>
-        <li>Data is stored in Firebase Firestore — it persists in the cloud, not just your browser</li>
+        <li>A room is created automatically when you first open the app</li>
+        <li>Your room link is shown on the People tab — tap <strong>Copy Link</strong> to share it</li>
+        <li>Anyone who opens the link joins the same room instantly</li>
+        <li>Data is saved in the cloud — it's not lost if you close your browser</li>
       </ul>
-      <div class="help-tip"><strong>Tip</strong>Tap the 🔗 button in the header or <strong>Copy Link</strong> on the People tab to copy your room URL and send it to your group.</div>
-      <div class="help-note"><strong>Important</strong>Anyone with the room link can view and edit the data — keep it within your group.</div>
-      <div class="help-h3">Creating a new room</div>
-      <p class="help-p">Tap <strong>＋ New Room</strong> on the People tab to open a brand-new empty room in a new browser tab. Your current room stays open and unaffected.</p>
-      <div class="help-note"><strong>Always bookmark the full URL</strong>The app identifies your room by the <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">#room=abc123</code> part of the URL. If you bookmark or share just the base URL (without the hash), the app will open whichever room was last used on that browser — which may not be the right one. Always save or share the complete link.</div>
+      <div class="help-tip"><strong>Tip</strong>Tap the 🔗 button in the header or <strong>Copy Link</strong> on the People tab to copy your room link.</div>
+      <div class="help-note"><strong>Keep the link private</strong>Anyone with the link can view and edit the room. Only share it with your group.</div>
+      <div class="help-h3">Starting a new room</div>
+      <p class="help-p">Tap <strong>＋ New Room</strong> on the People tab. A fresh empty room opens in a new tab — your current room is untouched.</p>
+      <div class="help-note"><strong>Always share the full link</strong>The room is identified by the end of the URL (the part after #room=). If you share just the website address without that part, whoever opens it will get a brand new empty room instead of yours. Always copy and share the full link.</div>
     </div>
 
     <!-- Setup -->
     <div class="card" id="h-setup">
-      <div class="help-h2"><span class="help-icon">👥</span>How to: Set up a group</div>
+      <div class="help-h2"><span class="help-icon">👥</span>Setting up your group</div>
       <ol class="help-steps">
-        <li><div><div class="st">Name the group</div><div class="sd">Tap <em>"Tap to add a name"</em> in the header — type a name like "Goa Trip 2025" and press Enter. You can also do this via Settings ⚙️.</div></div></li>
-        <li><div><div class="st">Add all members</div><div class="sd">On the People tab, tap <strong>+ Add Member</strong>. In the modal, enter the person's name and at least one of: a UPI ID (e.g. name@upi) or a UPI QR code image. Tap <strong>Save Member</strong>. Repeat for every member.</div></div></li>
-        <li><div><div class="st">Share the room link</div><div class="sd">Tap <strong>Copy Link</strong> on the People tab. Send the URL to your group — they open it and immediately join the same room.</div></div></li>
+        <li><div><div class="st">Name the group</div><div class="sd">Tap <em>"Tap to add a name"</em> in the header and type something like "Goa Trip" or "Flat expenses". Press Enter to save.</div></div></li>
+        <li><div><div class="st">Add everyone in the group</div><div class="sd">Go to the People tab and tap <strong>+ Add Member</strong>. Enter their name and UPI ID or QR code so others can pay them later. Repeat for each person.</div></div></li>
+        <li><div><div class="st">Share the room link</div><div class="sd">Tap <strong>Copy Link</strong> and send it to your group via WhatsApp, iMessage, or wherever you chat. They open the link and are in the same room immediately.</div></div></li>
       </ol>
-      <div class="help-tip"><strong>Tip</strong>Add everyone before adding expenses — people can only be assigned to expenses if they exist in the group.</div>
+      <div class="help-tip"><strong>Tip</strong>Add everyone before logging expenses — you can only split costs with people who are already in the group.</div>
     </div>
 
     <!-- UPI & QR -->
     <div class="card" id="h-upi">
       <div class="help-h2"><span class="help-icon">💳</span>UPI ID &amp; QR Code</div>
-      <p class="help-p">Every member must provide at least a UPI ID or a QR code image so others can pay them during settlement.</p>
-      <div class="help-h3">Adding UPI details when adding a member</div>
+      <p class="help-p">Each member needs a UPI ID or QR code so others can pay them when settling up. At least one is required.</p>
       <ol class="help-steps">
-        <li><div><div class="st">Tap + Add Member on the People tab</div></div></li>
-        <li><div><div class="st">Enter the person's name</div></div></li>
-        <li><div><div class="st">Enter a UPI ID</div><div class="sd">Type the VPA address, e.g. <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">name@upi</code>, <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">9876543210@okaxis</code>. At least one of UPI ID or QR is required.</div></div></li>
-        <li><div><div class="st">Upload a QR code image (optional)</div><div class="sd">Tap the upload area to pick a PNG or JPG from your device. Max size is 150 KB. A thumbnail preview appears.</div></div></li>
-        <li><div><div class="st">Tap Save Member</div><div class="sd">The person appears in the list with their UPI badge and/or QR thumbnail.</div></div></li>
+        <li><div><div class="st">Tap + Add Member</div></div></li>
+        <li><div><div class="st">Enter their name</div></div></li>
+        <li><div><div class="st">Enter their UPI ID</div><div class="sd">This is the address they use to receive money — e.g. <em>name@upi</em> or <em>9876543210@okaxis</em>.</div></div></li>
+        <li><div><div class="st">Optionally upload their QR code</div><div class="sd">Tap the upload area and pick a photo of their UPI QR code. Max 300 KB. A small preview appears.</div></div></li>
+        <li><div><div class="st">Tap Save Member</div></div></li>
       </ol>
-      <div class="help-h3">Where UPI details appear</div>
-      <ul style="font-size:13px;color:var(--text-muted);padding-left:18px;line-height:1.7;margin-bottom:10px">
-        <li><strong>People tab</strong> — each member row shows a teal UPI badge (tap to copy the ID) and a QR thumbnail (tap to enlarge).</li>
-        <li><strong>Settle Up tab</strong> — each suggested settlement shows a "Pay via UPI" strip with the payee's UPI ID and QR so the payer can scan directly.</li>
-      </ul>
-      <div class="help-tip"><strong>Tip</strong>Tap the 📋 copy icon next to a UPI ID to copy it straight to your clipboard, then paste it into any UPI app.</div>
-      <div class="help-note"><strong>Note</strong>QR images are stored as base64 inside the Firebase document. Keep images under 300 KB to avoid slowing down sync.</div>
+      <div class="help-tip"><strong>Tip</strong>Tap the 📋 icon next to a UPI ID to copy it. Tap a QR thumbnail to enlarge it and scan directly from the Settle Up screen.</div>
+      <div class="help-tip"><strong>Edit anytime</strong>On the People tab, tap the ✏️ pencil next to a member's name to update their UPI ID or QR code.</div>
     </div>
 
     <!-- Add expense -->
     <div class="card" id="h-expense">
-      <div class="help-h2"><span class="help-icon">🧾</span>How to: Add an expense</div>
+      <div class="help-h2"><span class="help-icon">🧾</span>Adding an expense</div>
       <ol class="help-steps">
-        <li><div><div class="st">Go to Expenses tab and tap +</div><div class="sd">The green + button is at the bottom-right of the screen.</div></div></li>
-        <li><div><div class="st">Enter description, amount, and date</div><div class="sd">The app auto-picks an emoji icon based on keywords (e.g. "dinner" → 🍝). Date defaults to today.</div></div></li>
-        <li><div><div class="st">Set who paid</div><div class="sd">Select the payer from the dropdown. The hint turns green when payer amounts match the total.</div></div></li>
-        <li><div><div class="st">Choose a split type</div><div class="sd">Pick Equal, Unequal, %, or Shares and configure the amounts (see Split Types below).</div></div></li>
-        <li><div><div class="st">Tap Save Expense</div><div class="sd">The expense appears instantly for all group members.</div></div></li>
+        <li><div><div class="st">Go to the Expenses tab and tap +</div><div class="sd">The + button is in the bottom-right corner.</div></div></li>
+        <li><div><div class="st">Enter a description, amount, and date</div><div class="sd">The app suggests a category icon based on what you type. Date defaults to today.</div></div></li>
+        <li><div><div class="st">Set who paid</div><div class="sd">Choose the person (or people) who paid. The green hint confirms the amounts add up correctly.</div></div></li>
+        <li><div><div class="st">Choose how to split it</div><div class="sd">Pick Equal, Unequal, % or Shares — see Split Types below for details.</div></div></li>
+        <li><div><div class="st">Tap Save Expense</div><div class="sd">Everyone in the room sees it immediately.</div></div></li>
       </ol>
-      <div class="help-tip"><strong>Tip</strong>Tap any expense card to view a full breakdown. From the detail view you can <strong>Edit</strong> or <strong>Delete</strong> it.</div>
+      <div class="help-tip"><strong>Tip</strong>Tap any expense to see the full breakdown. You can edit or delete it from there.</div>
     </div>
 
     <!-- Categories -->
     <div class="card" id="h-categories">
-      <div class="help-h2"><span class="help-icon">🎨</span>Expense Category Icons</div>
-      <p class="help-p">Every expense has a category icon shown on its card. When you type a description the app auto-suggests a matching icon — you can keep it or tap any icon in the grid to override it manually.</p>
-      <div class="help-h3">How it works</div>
+      <div class="help-h2"><span class="help-icon">🎨</span>Category Icons</div>
+      <p class="help-p">Every expense shows an icon on its card. The app picks one automatically based on what you type — tap any icon in the grid to choose a different one.</p>
       <ol class="help-steps">
-        <li><div><div class="st">Type a description</div><div class="sd">The icon grid highlights the auto-suggested icon based on keywords (e.g. "dinner" → 🍝, "cab" → 🚗).</div></div></li>
-        <li><div><div class="st">Tap any icon to override</div><div class="sd">Your choice is saved with the expense and shown on the expense card.</div></div></li>
-        <li><div><div class="st">Clear the choice</div><div class="sd">Edit the expense and tap a different icon, or leave the description unchanged to revert to auto-suggest.</div></div></li>
+        <li><div><div class="st">Type a description</div><div class="sd">The app highlights a suggested icon — e.g. "dinner" → 🍝, "cab" → 🚗.</div></div></li>
+        <li><div><div class="st">Tap any other icon to pick it instead</div><div class="sd">Your choice is saved with the expense.</div></div></li>
       </ol>
     </div>
 
@@ -875,226 +867,226 @@
           <tr>
             <td><span class="badge badge-teal">Equal</span></td>
             <td>Everyone pays the same</td>
-            <td>Total ÷ selected members. Check/uncheck to include or exclude.</td>
+            <td>Total divided equally. Tick or untick people to include or exclude them.</td>
           </tr>
           <tr>
             <td><span class="badge badge-teal">Unequal</span></td>
-            <td>Each person owes a specific amount</td>
-            <td>Type each person's exact amount. Hint shows the running total.</td>
+            <td>Each person owes a different amount</td>
+            <td>Type each person's exact share. The hint shows if it adds up correctly.</td>
           </tr>
           <tr>
             <td><span class="badge badge-teal">%</span></td>
             <td>Split by percentage</td>
-            <td>Type a % for each person — must total exactly 100%.</td>
+            <td>Enter a % for each person — must add up to 100%.</td>
           </tr>
           <tr>
             <td><span class="badge badge-teal">Shares</span></td>
             <td>Proportional split (e.g. 2 adults, 1 child)</td>
-            <td>Assign relative shares (e.g. 2, 2, 1). App calculates amounts proportionally.</td>
+            <td>Enter a number for each person (e.g. 2, 2, 1). The app works out the amounts.</td>
           </tr>
         </tbody>
       </table>
-      <div class="help-note"><strong>Common mistake — % type</strong>Click or tap <em>directly on the number input field</em>, not the row background. Tapping the row background toggles the checkbox and deselects the person.</div>
+      <div class="help-note"><strong>% split tip</strong>Tap directly on the number box, not the row. Tapping the row toggles that person in or out of the split.</div>
     </div>
 
     <!-- Multi-payer -->
     <div class="card" id="h-multipayer">
-      <div class="help-h2"><span class="help-icon">💳</span>How to: Multiple payers</div>
-      <p class="help-p">Use this when two or more people split a bill at the counter.</p>
+      <div class="help-h2"><span class="help-icon">💳</span>When multiple people paid</div>
+      <p class="help-p">Use this when two or more people split a bill at the counter — e.g. Alice paid ₹300 and Bob paid ₹200 for a ₹500 meal.</p>
       <ol class="help-steps">
-        <li><div><div class="st">Select the first payer and enter their amount</div></div></li>
-        <li><div><div class="st">Tap "+ Add payer" for a second row</div><div class="sd">Select the second person and enter what they paid.</div></div></li>
-        <li><div><div class="st">Confirm the hint is green</div><div class="sd">Payer total must equal the expense total before you can save.</div></div></li>
+        <li><div><div class="st">Enter the first payer and their amount</div></div></li>
+        <li><div><div class="st">Tap "+ Add payer" and enter the second person</div></div></li>
+        <li><div><div class="st">Check the hint turns green</div><div class="sd">The amounts must add up to the total before you can save.</div></div></li>
       </ol>
     </div>
 
     <!-- Filter & Sort -->
     <div class="card" id="h-filter">
-      <div class="help-h2"><span class="help-icon">🔍</span>Filter &amp; Sort Expenses</div>
-      <p class="help-p">The Expenses tab has a filter bar at the top with three controls:</p>
+      <div class="help-h2"><span class="help-icon">🔍</span>Filtering &amp; Sorting Expenses</div>
+      <p class="help-p">Use the bar at the top of the Expenses tab to find what you need quickly:</p>
       <table class="help-table">
         <thead><tr><th>Control</th><th>What it does</th></tr></thead>
         <tbody>
-          <tr><td><strong>Search</strong></td><td>Filters by description — type any keyword to narrow the list</td></tr>
-          <tr><td><strong>All people</strong></td><td>Shows only expenses where that person paid or was split with</td></tr>
-          <tr><td><strong>Sort</strong></td><td>Newest first, Oldest first, Highest amount, Lowest amount</td></tr>
+          <tr><td><strong>Search box</strong></td><td>Type any word to filter by description</td></tr>
+          <tr><td><strong>People dropdown</strong></td><td>Show only expenses a specific person was part of</td></tr>
+          <tr><td><strong>Sort dropdown</strong></td><td>Order by newest, oldest, highest, or lowest amount</td></tr>
         </tbody>
       </table>
-      <div class="help-tip"><strong>Tip</strong>Combine search and person filter together — e.g. search "food" and filter by Alice to see all food expenses Alice was part of.</div>
+      <div class="help-tip"><strong>Tip</strong>You can use search and the person filter at the same time — e.g. search "food" and pick Alice to see all food costs Alice was involved in.</div>
     </div>
 
     <!-- Sign-off -->
     <div class="card" id="h-signoff">
-      <div class="help-h2"><span class="help-icon">✅</span>How to: Sign off</div>
-      <p class="help-p">Before settling, each member confirms the expense list is complete and correct. This prevents disputes.</p>
+      <div class="help-h2"><span class="help-icon">✅</span>Sign-offs</div>
+      <p class="help-p">Before settling up, everyone confirms they've seen and agreed with the expense list. This avoids disputes later.</p>
       <ol class="help-steps">
-        <li><div><div class="st">Go to the Settle Up tab</div><div class="sd">The Sign-offs card appears at the top with each member's status.</div></div></li>
-        <li><div><div class="st">Each member taps their own Confirm button</div><div class="sd">Records the date of confirmation. Badge turns <span class="badge badge-green">✓ Confirmed</span>.</div></div></li>
-        <li><div><div class="st">Once all confirmed, proceed to settle</div><div class="sd">Summary shows "✓ All N members confirmed".</div></div></li>
+        <li><div><div class="st">Go to the Settle Up tab</div><div class="sd">The Sign-offs card shows each person's status at the top.</div></div></li>
+        <li><div><div class="st">Each person taps their own Confirm button</div><div class="sd">Their badge turns green — <span class="badge badge-green">✓ Confirmed</span>.</div></div></li>
+        <li><div><div class="st">Once everyone has confirmed, settle up</div></div></li>
       </ol>
       <div style="margin-top:10px">
-        <p class="help-p" style="margin-bottom:6px"><strong>Sign-off statuses:</strong></p>
-        <p class="help-p"><span class="badge badge-gray">Pending</span> — not confirmed yet.</p>
-        <p class="help-p"><span class="badge badge-green">✓ Confirmed</span> — confirmed, no new expenses since.</p>
-        <p class="help-p"><span class="badge" style="background:#fefcbf;color:#744210">⚠ N new expenses</span> — confirmed earlier but new expenses were added after. Tap <strong>Re-confirm</strong>.</p>
+        <p class="help-p" style="margin-bottom:6px"><strong>What the badges mean:</strong></p>
+        <p class="help-p"><span class="badge badge-gray">Pending</span> — hasn't confirmed yet.</p>
+        <p class="help-p"><span class="badge badge-green">✓ Confirmed</span> — agreed, and nothing has changed since.</p>
+        <p class="help-p"><span class="badge" style="background:#fefcbf;color:#744210">⚠ Expenses changed</span> — confirmed earlier but the expense list changed since. Tap <strong>Re-confirm</strong>.</p>
       </div>
-      <div class="help-tip"><strong>Tip</strong>If you tap <strong>Settle</strong> before everyone has signed off, the app will warn you with a list of members who are still pending or need re-confirmation. You can proceed anyway or go back and wait for them to confirm first.</div>
-      <div class="help-tip"><strong>Tip</strong>Once all members have confirmed, an <strong>Export CSV</strong> button appears on the Settle Up tab so you can download the full expense and settlement history.</div>
+      <div class="help-tip"><strong>Tip</strong>If you tap Settle before everyone has confirmed, the app shows a warning listing who still needs to sign off. You can still proceed if needed.</div>
+      <div class="help-tip"><strong>Tip</strong>Once everyone confirms, an <strong>Export CSV</strong> button appears so you can save a copy of everything.</div>
     </div>
 
     <!-- Settle up -->
     <div class="card" id="h-settle">
-      <div class="help-h2"><span class="help-icon">💸</span>How to: Record a payment</div>
-      <p class="help-p">The Settle Up tab shows the <em>minimum</em> number of transfers needed to clear all balances.</p>
+      <div class="help-h2"><span class="help-icon">💸</span>Settling up</div>
+      <p class="help-p">The Settle Up tab shows the smallest number of payments needed to clear every balance.</p>
       <ol class="help-steps">
-        <li><div><div class="st">Review Suggested Settlements</div><div class="sd">Each row shows who pays whom and how much.</div></div></li>
-        <li><div><div class="st">Make the payment outside the app</div><div class="sd">Each settlement row shows a <strong>Pay via UPI</strong> strip with the payee's UPI ID (tap 📋 to copy) and QR code (tap to enlarge and scan). Transfer via GPay, PhonePe, Paytm, or any UPI app.</div></div></li>
-        <li><div><div class="st">Tap Settle on that row</div><div class="sd">Pre-filled dialog opens. Adjust amount or add a note (e.g. "GPay"), then tap <strong>Confirm Payment</strong>.</div></div></li>
-        <li><div><div class="st">Repeat until all transfers are recorded</div><div class="sd">App shows 🎉 All settled up! when every balance is cleared.</div></div></li>
+        <li><div><div class="st">Check the Suggested Settlements</div><div class="sd">Each row shows who pays whom and how much.</div></div></li>
+        <li><div><div class="st">Make the payment outside the app</div><div class="sd">Each row shows a Pay via UPI strip — tap 📋 to copy the UPI ID or tap the QR thumbnail to scan it in GPay, PhonePe, or any UPI app.</div></div></li>
+        <li><div><div class="st">Tap Settle on that row</div><div class="sd">A form opens pre-filled with the amount. Add a note if you like (e.g. "GPay") and tap <strong>Confirm Payment</strong>.</div></div></li>
+        <li><div><div class="st">Repeat for each payment</div><div class="sd">When all balances are cleared, the app shows 🎉 All settled up!</div></div></li>
       </ol>
-      <div class="help-tip"><strong>Tip</strong>The smart settlement algorithm minimises transfers. 5 people with complex debts may need only 4 (or fewer) payments to fully balance out.</div>
-      <div class="help-tip"><strong>Edit a recorded payment</strong>In the Settlement History section, tap the ✏️ pencil icon next to any payment to edit its amount, date, or note. Tap ✕ to delete it.</div>
+      <div class="help-tip"><strong>Tip</strong>The app works out the minimum number of payments — 5 people with tangled debts might need just 4 transfers.</div>
+      <div class="help-tip"><strong>Made a mistake?</strong>In the Settlement History section, tap ✏️ next to any recorded payment to edit it, or ✕ to delete it.</div>
     </div>
 
     <!-- Export CSV -->
     <div class="card" id="h-export">
-      <div class="help-h2"><span class="help-icon">📥</span>How to: Export CSV</div>
-      <p class="help-p">Once every member has confirmed their sign-off, an <strong>Export CSV</strong> button appears on the Settle Up tab. Tap it to download a spreadsheet with three sections:</p>
+      <div class="help-h2"><span class="help-icon">📥</span>Exporting to CSV</div>
+      <p class="help-p">Once everyone has signed off, an <strong>Export CSV</strong> button appears on the Settle Up tab. Tap it to download a spreadsheet you can open in Excel, Google Sheets, or Numbers.</p>
       <table class="help-table">
-        <thead><tr><th>Section</th><th>What's included</th></tr></thead>
+        <thead><tr><th>Section in the file</th><th>What's in it</th></tr></thead>
         <tbody>
-          <tr><td><strong>Expenses</strong></td><td>Date, description, amount, split type, who paid, and how it was split per person</td></tr>
-          <tr><td><strong>Balances</strong></td><td>Net balance for each member (positive = gets back, negative = owes)</td></tr>
-          <tr><td><strong>Settlement History</strong></td><td>All recorded payments — from, to, amount, date, and note</td></tr>
+          <tr><td><strong>Expenses</strong></td><td>Every expense — date, description, amount, who paid, how it was split</td></tr>
+          <tr><td><strong>Balances</strong></td><td>How much each person gets back or owes overall</td></tr>
+          <tr><td><strong>Settlement History</strong></td><td>All payments recorded in the app</td></tr>
         </tbody>
       </table>
-      <div class="help-tip"><strong>Tip</strong>The file is named <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">GroupName_expenses.csv</code> and opens in Excel, Google Sheets, or Numbers.</div>
-      <div class="help-note"><strong>Note</strong>The Export button only appears when <em>all</em> members have confirmed sign-offs. If it's not visible, check the Sign-offs card at the top of the Settle Up tab for anyone still pending.</div>
+      <div class="help-note"><strong>Not seeing the button?</strong>It only appears when everyone has confirmed their sign-off. Check the Sign-offs card at the top of the Settle Up tab.</div>
     </div>
 
     <!-- Share room -->
     <div class="card" id="h-share">
-      <div class="help-h2"><span class="help-icon">🔗</span>How to: Share the room</div>
+      <div class="help-h2"><span class="help-icon">🔗</span>Sharing the room</div>
       <ol class="help-steps">
-        <li><div><div class="st">Tap the 🔗 button in the header, or Copy Link on the People tab</div><div class="sd">The full room URL (including the <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">#room=</code> hash) is copied to your clipboard.</div></div></li>
-        <li><div><div class="st">Send the URL to your group</div><div class="sd">Paste into WhatsApp, Telegram, iMessage, email — wherever your group communicates.</div></div></li>
-        <li><div><div class="st">Group members open the link</div><div class="sd">Their browser loads the same room. The <span class="badge badge-green">● Live</span> pill in the header confirms they're connected and all data loads immediately.</div></div></li>
+        <li><div><div class="st">Tap 🔗 in the header, or Copy Link on the People tab</div><div class="sd">The full room link is copied to your clipboard.</div></div></li>
+        <li><div><div class="st">Send it to your group</div><div class="sd">Paste into WhatsApp, Telegram, iMessage, or email.</div></div></li>
+        <li><div><div class="st">They open the link</div><div class="sd">They're in the same room instantly. The green <span class="badge badge-green">● Live</span> badge confirms everyone is connected.</div></div></li>
       </ol>
-      <div class="help-note"><strong>Important</strong>Always share the <em>full</em> link including the <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">#room=abc123</code> part. A link without the hash opens a brand-new empty room.</div>
+      <div class="help-note"><strong>Important</strong>Always share the complete link — not just the website address. The room is identified by the code at the end of the link. Without it, whoever opens it gets an empty room.</div>
     </div>
 
     <!-- Settings -->
     <div class="card" id="h-settings">
-      <div class="help-h2"><span class="help-icon">⚙️</span>How to: Settings</div>
+      <div class="help-h2"><span class="help-icon">⚙️</span>Settings</div>
       <div class="help-h3">Change group name</div>
-      <p class="help-p">Tap <em>"Tap to add a name"</em> in the header to edit inline, or open <strong>Settings ⚙️ → Group / Expense Name</strong>.</p>
+      <p class="help-p">Tap the name in the header to edit it directly, or open Settings ⚙️ and change it there.</p>
       <div class="help-h3">Change currency symbol</div>
-      <p class="help-p">Open <strong>Settings ⚙️ → Currency Symbol</strong>. Type your symbol (e.g. $ € £ ¥) and tap <strong>Save</strong>. All amounts update immediately.</p>
+      <p class="help-p">Open Settings ⚙️, update the Currency Symbol (e.g. $ € £ ¥), and tap Save. All amounts update straight away.</p>
       <div class="help-h3">Remove a member</div>
-      <p class="help-p">On the <strong>People</strong> tab, tap ✕ next to the person's name. If they appear in any expense you'll be asked to confirm.</p>
-      <div class="help-h3">Edit a member's UPI details</div>
-      <p class="help-p">On the <strong>People</strong> tab, tap the ✏️ pencil icon next to a member's name. The same Add Member modal opens pre-filled — update the UPI ID or upload a new QR image, then tap <strong>Save Member</strong>.</p>
+      <p class="help-p">On the People tab, tap ✕ next to their name. If they're part of any expense, you'll be asked to confirm first.</p>
+      <div class="help-h3">Edit a member's payment details</div>
+      <p class="help-p">On the People tab, tap ✏️ next to their name to update their UPI ID or QR code.</p>
       <div class="help-h3">Clear All Data vs Delete Room</div>
-      <p class="help-p"><strong>Clear All Data</strong> — wipes expenses, settlements, and sign-offs but keeps the room alive with all members, group name, and currency intact. The room link still works. Use this to reuse the same group for a new trip.</p>
-      <p class="help-p"><strong>Delete Room</strong> — permanently removes the entire room from Firebase including members, expenses, and the room itself. The room link stops working for everyone. Use this to fully close a room you no longer need.</p>
-      <div class="help-note"><strong>Cannot be undone</strong>Both actions are irreversible. Take a screenshot of Settlement History before proceeding if you need a record.</div>
+      <p class="help-p"><strong>Clear All Data</strong> — removes all expenses, payments, and sign-offs but keeps the group members, name, and currency. The room link still works. Good for starting a new trip with the same group.</p>
+      <p class="help-p"><strong>Delete Room</strong> — permanently removes everything, including members and the room itself. The link stops working for everyone. Use this when the room is no longer needed.</p>
+      <div class="help-note"><strong>Both actions cannot be undone.</strong> Export a CSV or take a screenshot first if you want a record.</div>
     </div>
 
     <!-- Dark Mode -->
     <div class="card" id="h-darkmode">
       <div class="help-h2"><span class="help-icon">🌙</span>Dark Mode</div>
-      <p class="help-p">Tap the 🌙 button in the header to switch to dark mode. Tap ☀️ to switch back. Your preference is saved and restored automatically on every visit.</p>
-      <div class="help-tip"><strong>Tip</strong>On first visit the app follows your device's system preference — if your phone is in dark mode, the app opens in dark mode automatically.</div>
+      <p class="help-p">Tap 🌙 in the header to switch to dark mode. Tap ☀️ to go back. Your choice is remembered every time you open the app.</p>
+      <div class="help-tip"><strong>Tip</strong>The app automatically matches your phone's dark/light setting on the first visit.</div>
     </div>
 
     <!-- PWA / Install -->
     <div class="card" id="h-pwa">
-      <div class="help-h2"><span class="help-icon">📲</span>Install as App</div>
-      <p class="help-p">Expensplit can be installed to your home screen and launched like a native app — no App Store required.</p>
-      <div class="help-h3">On Android (Chrome)</div>
+      <div class="help-h2"><span class="help-icon">📲</span>Installing the app</div>
+      <p class="help-p">You can add Expensplit to your home screen so it opens like a regular app — no App Store needed.</p>
+      <div class="help-h3">On Android</div>
       <ol class="help-steps">
-        <li><div><div class="st">A 📲 Install button appears in the header</div><div class="sd">Tap it when prompted by the browser.</div></div></li>
-        <li><div><div class="st">Tap Install in the browser prompt</div><div class="sd">The app is added to your home screen and opens in standalone mode (no browser chrome).</div></div></li>
+        <li><div><div class="st">Tap the 📲 Install button in the header</div><div class="sd">This appears automatically in Chrome when the app is ready to install.</div></div></li>
+        <li><div><div class="st">Tap Install when asked</div><div class="sd">The app appears on your home screen and opens without any browser bars.</div></div></li>
       </ol>
-      <div class="help-h3">On iPhone (Safari)</div>
+      <div class="help-h3">On iPhone</div>
       <ol class="help-steps">
         <li><div><div class="st">Open the app in Safari</div></div></li>
-        <li><div><div class="st">Tap the Share button (box with arrow)</div></div></li>
+        <li><div><div class="st">Tap the Share button (the box with an arrow pointing up)</div></div></li>
         <li><div><div class="st">Tap "Add to Home Screen"</div><div class="sd">The app icon appears on your home screen and opens fullscreen.</div></div></li>
       </ol>
-      <div class="help-note"><strong>Note</strong>The 📲 Install button only appears on browsers that support the install prompt (Chrome on Android, Edge on desktop). On iOS you must use the Safari share sheet.</div>
+      <div class="help-note"><strong>Note</strong>On iPhones, you must use Safari — the install option is not available in Chrome or other browsers on iOS.</div>
     </div>
 
     <!-- Reuse -->
     <div class="card" id="h-reuse">
-      <div class="help-h2"><span class="help-icon">🔄</span>How to: Reuse for a new trip</div>
+      <div class="help-h2"><span class="help-icon">🔄</span>Reusing for a new trip</div>
       <ol class="help-steps">
-        <li><div><div class="st">Record all payments first</div><div class="sd">Go to Settle Up and tap Settle on every suggested transfer to preserve the history.</div></div></li>
-        <li><div><div class="st">Open Settings ⚙️ and tap Clear All Data</div><div class="sd">Expenses and settlements are deleted. Group name, members, and currency are kept.</div></div></li>
-        <li><div><div class="st">Update the group name</div><div class="sd">Tap the name in the header and type the new trip name.</div></div></li>
-        <li><div><div class="st">Start adding new expenses</div><div class="sd">Same room ID — no need to re-share the link.</div></div></li>
+        <li><div><div class="st">Record all payments first</div><div class="sd">Go to Settle Up and tap Settle on every suggested transfer so nothing is lost.</div></div></li>
+        <li><div><div class="st">Export a CSV if you want a record</div><div class="sd">Once everyone has signed off, tap Export CSV on the Settle Up tab.</div></div></li>
+        <li><div><div class="st">Open Settings ⚙️ and tap Clear All Data</div><div class="sd">All expenses and payments are removed. Members, group name, and currency stay.</div></div></li>
+        <li><div><div class="st">Rename the group</div><div class="sd">Tap the name in the header and type the new trip name.</div></div></li>
+        <li><div><div class="st">Start adding new expenses</div><div class="sd">Same room link — no need to share it again.</div></div></li>
       </ol>
     </div>
 
     <!-- FAQ -->
     <div class="card" id="h-faq">
-      <div class="help-h2"><span class="help-icon">❓</span>FAQ</div>
+      <div class="help-h2"><span class="help-icon">❓</span>Common Questions</div>
 
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">Is my data private?</div>
-        <div class="faq-a"><p>Data is secured by obscurity — only people with the room link can access it. The Room ID is a random 12-character string that is practically impossible to guess. Don't share the link publicly.</p></div>
+        <div class="faq-a"><p>Only people with the room link can see or edit the data. The link contains a random code that's practically impossible to guess. Don't share it publicly.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">What if I lose the room link?</div>
-        <div class="faq-a"><p>The Room ID is saved in your browser's local storage. Opening the app on the same browser/device reconnects automatically. The Room ID is also shown on the People tab — copy it and store it safely. On a new device, ask a group member with the link to share it again.</p></div>
+        <div class="faq-a"><p>Your browser remembers the room and reconnects automatically when you reopen the app on the same device. You can also copy the Room ID shown on the People tab and keep it somewhere safe. On a new device, ask someone in the group to share the link again.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">Can multiple people add expenses at the same time?</div>
-        <div class="faq-a"><p>Yes. Firebase Firestore syncs in real time. When any member saves an expense, all other open browsers update within seconds. The <span class="badge badge-green">● Live</span> pill confirms the connection is active.</p></div>
+        <div class="faq-a"><p>Yes. Changes show up for everyone within seconds. The green <span class="badge badge-green">● Live</span> badge in the header means you're connected and everything is in sync.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">What does ● Live / ● Offline mean?</div>
-        <div class="faq-a"><p><span class="badge badge-green">● Live</span> — connected to Firebase, changes sync in real time.</p><p><span class="badge" style="background:#fed7d7;color:#c53030">● Offline</span> — Firebase connection failed. The app shows the last saved state from your browser. Changes won't sync until reconnected.</p></div>
+        <div class="faq-a"><p><span class="badge badge-green">● Live</span> — connected, changes sync in real time.</p><p><span class="badge" style="background:#fed7d7;color:#c53030">● Offline</span> — no connection. The app shows the last saved data. Changes won't reach others until you're back online.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">How does the smart settlement work?</div>
-        <div class="faq-a"><p>The app calculates each person's net balance (total paid minus total owed). It then uses a debt-minimisation algorithm to find the fewest transfers that bring every balance to zero — significantly fewer than settling every pair individually.</p></div>
+        <div class="faq-a"><p>The app adds up everything each person paid and everything they owe, then works out the smallest set of transfers to bring everyone to zero. This is usually far fewer payments than settling each pair of people individually.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">Can I edit or delete an expense after saving?</div>
-        <div class="faq-a"><p>Yes. Tap the expense card to open its detail view, then tap <strong>Edit</strong> or <strong>Delete</strong>. Adding or deleting expenses marks previously confirmed sign-offs as needing re-confirmation.</p></div>
+        <div class="faq-a"><p>Yes. Tap the expense card to open it, then tap <strong>Edit</strong> or <strong>Delete</strong>. Changing the expense list will prompt anyone who already signed off to re-confirm.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
-        <div class="faq-q">What does "Re-confirm needed" mean?</div>
-        <div class="faq-a"><p>A member confirmed the expense list earlier, but new expenses were added (or deleted) after that. The <span class="badge" style="background:#fefcbf;color:#744210">⚠ N new expenses</span> badge prompts them to review and tap <strong>Re-confirm</strong> if they agree.</p></div>
+        <div class="faq-q">What does "Expenses changed" mean on a sign-off?</div>
+        <div class="faq-a"><p>That person confirmed the list earlier, but something was added or removed since then. They need to review and tap <strong>Re-confirm</strong> to agree to the updated list.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">Does the app work without internet?</div>
-        <div class="faq-a"><p>Partially. Existing data loads from browser local storage when offline. Changes won't sync until reconnected. Firebase may also buffer writes locally and replay them when the connection is restored.</p></div>
+        <div class="faq-a"><p>Partially. You can view existing data, but any changes won't reach others until you're back online. The app will sync automatically once the connection is restored.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">What happens when I tap Clear All Data?</div>
-        <div class="faq-a"><p>Expenses, settlements, and sign-offs are permanently deleted from both the browser and Firebase. The group name, member list (including UPI details), and currency symbol are preserved — the room stays alive and the link still works. This is different from <strong>Delete Room</strong>, which removes everything including members and the room itself. Cannot be undone — take a screenshot of Settlement History first if you need a record.</p></div>
+        <div class="faq-a"><p>All expenses, payments, and sign-offs are deleted. Your group members, name, and currency are kept — the room link still works. This is different from <strong>Delete Room</strong>, which removes everything including members. Export a CSV first if you want a record.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">Can I use this for multiple trips at once?</div>
-        <div class="faq-a"><p>Yes — each room is a separate workspace. Tap <strong>＋ New Room</strong> on the People tab to open a fresh room in a new browser tab. Share that room's link with the relevant group. Always bookmark or share the full URL including the <code style="background:#edf2f7;border-radius:3px;padding:1px 5px;font-size:11px;color:#c53030">#room=</code> part so everyone lands in the right room.</p></div>
+        <div class="faq-a"><p>Yes — each room is a separate space. Tap <strong>＋ New Room</strong> on the People tab to open a fresh room for a different group or trip. Always share the full link (including the code at the end) so everyone joins the right room.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">How many people can be in a group?</div>
-        <div class="faq-a"><p>There is no hard limit. Groups of 2–20 people work well. For larger groups, note that every person's QR image is stored in a single Firestore document (1 MB limit) — keep QR images under 150 KB each to stay well within that limit.</p></div>
+        <div class="faq-a"><p>There's no hard limit. Groups of 2–20 work well. If you have many members each with a large QR image, keep the images under 300 KB each to avoid slowing things down.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
-        <div class="faq-q">Is a UPI ID or QR code mandatory?</div>
-        <div class="faq-a"><p>Yes — at least one of a UPI ID or a QR code image is required when adding a member. This ensures the payer always has a way to transfer money during settlement. You can add both if you like. Use the ✏️ edit button on the People tab to update these details at any time.</p></div>
+        <div class="faq-q">Is a UPI ID or QR code required?</div>
+        <div class="faq-a"><p>Yes — at least one is required per member so others can pay them during settlement. You can add both. Tap ✏️ on the People tab to update these at any time.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
-        <div class="faq-q">The % input keeps unchecking the person — what do I do?</div>
-        <div class="faq-a"><p>Tap <em>directly on the number input box</em>, not on the row background. The row background acts as a checkbox toggle. Targeting the input itself avoids accidentally deselecting the person.</p></div>
+        <div class="faq-q">The % input keeps deselecting the person — what do I do?</div>
+        <div class="faq-a"><p>Tap directly on the number input box, not on the row around it. Tapping the row toggles that person in or out of the split.</p></div>
       </div>
       <div class="faq-item" onclick="this.classList.toggle('open')">
         <div class="faq-q">Can I change the currency mid-trip?</div>
-        <div class="faq-a"><p>Yes — open Settings ⚙️ and update the currency symbol. This is a display-only change; underlying numbers are not converted. If your group used two currencies, convert amounts manually before entering.</p></div>
+        <div class="faq-a"><p>Yes — open Settings ⚙️ and change the currency symbol. This only changes how amounts are displayed, not the numbers themselves. If your group used two currencies, you'll need to convert amounts manually before entering them.</p></div>
       </div>
 
     </div>
