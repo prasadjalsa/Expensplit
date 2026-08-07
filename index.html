@@ -641,7 +641,6 @@
   <div class="tab" onclick="switchTab('expenses')">&#x1f9fe; Expenses</div>
   <div class="tab" onclick="switchTab('balances')">&#x2696;&#xfe0f; Balances</div>
   <div class="tab" onclick="switchTab('settle')">&#x2705; Settle Up</div>
-  <div class="tab" onclick="switchTab('activity')">&#x1f4cb; Activity</div>
   <div class="tab" onclick="switchTab('help')">&#x2753; Help</div>
 </nav>
 
@@ -738,6 +737,25 @@
       </select>
     </div>
     <div id="exp-list"></div>
+
+    <!-- Activity collapsed section -->
+    <div class="card" style="margin-top:4px">
+      <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none"
+        onclick="toggleActivity()">
+        <div style="font-size:15px;font-weight:700">📋 Activity Log</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <select id="activity-sort" class="filter-select" style="font-size:12px;padding:4px 8px"
+            onclick="event.stopPropagation()" onchange="renderActivityInline()">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+          </select>
+          <span id="activity-chevron" style="font-size:18px;color:var(--text-muted);transition:transform 0.2s">▼</span>
+        </div>
+      </div>
+      <div id="activity-inline" style="display:none;margin-top:14px">
+        <div id="activity-inline-content"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Balances section -->
@@ -749,11 +767,6 @@
   <div id="sec-settle" class="section">
     <div id="ack-card" class="card" style="display:none"></div>
     <div id="settle-content"></div>
-  </div>
-
-  <!-- Activity section -->
-  <div id="sec-activity" class="section">
-    <div id="activity-content"></div>
   </div>
 
   <!-- Help / Docs section -->
@@ -1136,6 +1149,18 @@
 
 </main>
 
+<!-- Notification banner -->
+<div id="notif-banner" style="display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+  width:calc(100% - 28px);max-width:612px;z-index:300;
+  background:#1a202c;color:white;border-radius:12px;
+  padding:12px 14px;display:none;align-items:center;gap:10px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3)">
+  <span style="font-size:18px">🔔</span>
+  <span style="flex:1;font-size:13px;font-weight:500">Notifications are off — turn on to get alerts for expenses involving you.</span>
+  <button onclick="bannerEnableNotif()" style="background:var(--primary);border:none;color:white;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Turn On</button>
+  <button onclick="dismissNotifBanner()" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:18px;cursor:pointer;line-height:1;padding:0 2px">&#x2715;</button>
+</div>
+
 <!-- FAB -->
 <button class="fab" id="fab" onclick="openAddExpense()">+</button>
 
@@ -1290,6 +1315,22 @@
     <div style="display:flex;gap:10px">
       <button class="btn btn-ghost" style="flex:1" onclick="closeSignoffWarnModal()">Go Back</button>
       <button class="btn btn-primary" style="flex:1" onclick="proceedSettle()">Proceed Anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CONFIRM MODAL ═══ -->
+<div id="confirm-modal" class="overlay overlay-center" style="display:none"
+  onclick="overlayClick(event,'confirm-modal',cancelConfirm)">
+  <div class="modal modal-center" onclick="event.stopPropagation()" style="max-width:360px">
+    <div class="modal-head">
+      <span class="modal-title" id="confirm-title">Are you sure?</span>
+      <button class="btn-icon" onclick="cancelConfirm()" style="font-size:20px">&#x2715;</button>
+    </div>
+    <p id="confirm-body" style="font-size:14px;color:var(--text-muted);line-height:1.55;margin-bottom:20px"></p>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="cancelConfirm()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" id="confirm-ok-btn" onclick="confirmOk()">Delete</button>
     </div>
   </div>
 </div>
@@ -1613,7 +1654,7 @@ function avatarHtml(id, size = '') {
 // ════════════════════════════════════════════════
 // TABS
 // ════════════════════════════════════════════════
-const TAB_IDS = ['people','expenses','balances','settle','activity','help'];
+const TAB_IDS = ['people','expenses','balances','settle','help'];
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach((el, i) =>
     el.classList.toggle('active', TAB_IDS[i] === tab));
@@ -1624,7 +1665,6 @@ function switchTab(tab) {
   if (tab === 'expenses') renderExpenses();
   if (tab === 'balances') renderBalances();
   if (tab === 'settle')   renderSettle();
-  if (tab === 'activity') renderActivity();
 }
 
 // ════════════════════════════════════════════════
@@ -1830,10 +1870,21 @@ function savePersonModal() {
 function removePerson(id) {
   const inUse = S.expenses.some(e =>
     e.payers.some(p => p.personId === id) || e.splits.some(s => s.personId === id));
-  if (inUse && !confirm(`${personName(id)} has expenses. Remove anyway?`)) return;
-  S.people = S.people.filter(p => p.id !== id);
-  if (S.acks) delete S.acks[id];
-  save(); renderPeople();
+  const doRemove = () => {
+    S.people = S.people.filter(p => p.id !== id);
+    if (S.acks) delete S.acks[id];
+    save(); renderPeople();
+  };
+  if (inUse) {
+    showConfirm(
+      'Remove Member',
+      `${personName(id)} is part of existing expenses. Removing them won't delete those expenses but they'll show as "Unknown". Continue?`,
+      'Remove',
+      doRemove
+    );
+  } else {
+    doRemove();
+  }
 }
 
 // ════════════════════════════════════════════════
@@ -2223,12 +2274,18 @@ function editExpense() {
 }
 
 function deleteExpense() {
-  if (!confirm('Delete this expense?')) return;
-  const e = S.expenses.find(x => x.id === viewingId);
-  if (e) addAuditEntry('deleted', e);
-  S.expenses = S.expenses.filter(e => e.id !== viewingId);
-  save(); closeDetailModal(); renderExpenses();
-  toast('Expense deleted');
+  showConfirm(
+    'Delete Expense',
+    `Delete "${S.expenses.find(e => e.id === viewingId)?.desc}"? This cannot be undone.`,
+    'Delete',
+    () => {
+      const e = S.expenses.find(x => x.id === viewingId);
+      if (e) addAuditEntry('deleted', e);
+      S.expenses = S.expenses.filter(e => e.id !== viewingId);
+      save(); closeDetailModal(); renderExpenses();
+      toast('Expense deleted');
+    }
+  );
 }
 
 // ════════════════════════════════════════════════
@@ -2598,10 +2655,16 @@ function editSettlement(id) {
 }
 
 function deleteSettlement(id) {
-  if (!confirm('Remove this settlement record?')) return;
-  S.settlements = S.settlements.filter(s => s.id !== id);
-  save(); renderSettle();
-  toast('Settlement removed');
+  showConfirm(
+    'Remove Payment',
+    'Remove this recorded payment? This cannot be undone.',
+    'Remove',
+    () => {
+      S.settlements = S.settlements.filter(s => s.id !== id);
+      save(); renderSettle();
+      toast('Settlement removed');
+    }
+  );
 }
 
 // ════════════════════════════════════════════════
@@ -2626,24 +2689,40 @@ function saveSettings() {
   toast('Settings saved!');
 }
 function clearAll() {
-  if (!confirm('Delete ALL data? This cannot be undone.')) return;
-  S = { currency: S.currency, name: S.name, people: [], expenses: [], settlements: [], acks: {} };
-  save(); closeSettings();
-  renderPeople(); renderExpenses(); renderBalances(); renderSettle();
-  toast('All data cleared');
+  showConfirm(
+    'Clear All Data',
+    'This deletes all expenses, payments, and sign-offs. Members, group name, and currency are kept. This cannot be undone.',
+    'Clear All',
+    () => {
+      S = { currency: S.currency, name: S.name, people: S.people, expenses: [], settlements: [], acks: {}, auditLog: [] };
+      save(); closeSettings();
+      renderPeople(); renderExpenses(); renderBalances(); renderSettle();
+      toast('All data cleared');
+    }
+  );
 }
 
 function deleteRoom() {
-  if (!confirm(`Delete this room ("${S.name || ROOM_ID}") permanently?\n\nThis removes ALL data from Firebase — members, expenses, settlements. This cannot be undone.`)) return;
-  groupDoc.delete()
-    .then(() => {
-      localStorage.removeItem('expensplit_room');
-      S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
-      const newId = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
-      history.replaceState(null, '', location.pathname + '#room=' + newId);
-      location.reload();
-    })
-    .catch(e => { console.error(e); toast('Failed to delete room — try again'); });
+  showConfirm(
+    'Delete Room',
+    `Permanently delete "${S.name || ROOM_ID}"? This removes everything — members, expenses, settlements — from the cloud. The room link will stop working for everyone. This cannot be undone.`,
+    'Delete Room',
+    () => {
+      groupDoc.delete()
+        .then(() => {
+          localStorage.removeItem('expensplit_room');
+          S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
+          const newId = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
+          history.replaceState(null, '', location.pathname + '#room=' + newId);
+          location.reload();
+        })
+        .catch(e => {
+          console.error('deleteRoom error:', e.code, e.message);
+          toast(`Failed to delete room: ${e.message || 'Check console for details'}`);
+        });
+    }
+    }
+  );
 }
 
 // ════════════════════════════════════════════════
@@ -2700,6 +2779,24 @@ function toast(msg) {
 }
 function overlayClick(e, id, closeFn) {
   if (e.target === document.getElementById(id)) closeFn();
+}
+
+// ── Reusable confirm modal ────────────────────
+let _confirmCallback = null;
+function showConfirm(title, body, okLabel, callback) {
+  _confirmCallback = callback;
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-body').textContent = body;
+  document.getElementById('confirm-ok-btn').textContent = okLabel || 'Delete';
+  document.getElementById('confirm-modal').style.display = 'flex';
+}
+function confirmOk() {
+  document.getElementById('confirm-modal').style.display = 'none';
+  if (_confirmCallback) { _confirmCallback(); _confirmCallback = null; }
+}
+function cancelConfirm() {
+  document.getElementById('confirm-modal').style.display = 'none';
+  _confirmCallback = null;
 }
 // ════════════════════════════════════════════════
 // EXPENSE CATEGORIES
@@ -2979,7 +3076,18 @@ initDark();
 
 function newRoom() {
   const newId = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
-  window.open(location.pathname + '#room=' + newId, '_blank');
+  const url = location.href.split('#')[0] + '#room=' + newId;
+  // In standalone PWA, window.open opens inside the PWA — use a full absolute URL
+  // with target _blank so the OS opens it in the default browser instead
+  const isStandalone = window.navigator.standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches;
+  if (isStandalone) {
+    // Construct absolute URL and open in browser
+    const absUrl = (location.origin + location.pathname).replace(/\/$/, '') + '/index.html#room=' + newId;
+    window.open(absUrl, '_blank', 'noopener');
+  } else {
+    window.open(url, '_blank');
+  }
 }
 
 function shareURL() {
@@ -3006,8 +3114,69 @@ function fallbackCopy(url) {
 // ════════════════════════════════════════════════
 // ACTIVITY LOG
 // ════════════════════════════════════════════════
+let activityOpen = false;
+
+function toggleActivity() {
+  activityOpen = !activityOpen;
+  const panel = document.getElementById('activity-inline');
+  const chevron = document.getElementById('activity-chevron');
+  panel.style.display = activityOpen ? 'block' : 'none';
+  chevron.style.transform = activityOpen ? 'rotate(180deg)' : '';
+  if (activityOpen) renderActivityInline();
+}
+
+function buildActivityRows(log, myId) {
+  const sort = document.getElementById('activity-sort')?.value || 'newest';
+  const sorted = [...log];
+  if (sort === 'oldest') sorted.reverse();
+  if (!sorted.length) return `<div class="empty" style="padding:16px 0">
+    <div class="empty-icon" style="font-size:32px">📋</div>
+    <h3>No activity yet</h3>
+    <p>Expense changes will appear here</p>
+  </div>`;
+  return sorted.map(entry => {
+    const byPerson = entry.byPersonId ? S.people.find(p => p.id === entry.byPersonId) : null;
+    const byName = byPerson ? byPerson.name : 'Someone';
+    const isMe = entry.byPersonId && entry.byPersonId === myId;
+    const actionColor = entry.action === 'added' ? 'var(--success)' : entry.action === 'deleted' ? 'var(--danger)' : 'var(--warning)';
+    const actionIcon = entry.action === 'added' ? '➕' : entry.action === 'deleted' ? '🗑️' : '✏️';
+    const involved = entry.expenseSplits?.some(s => s.personId === myId);
+    const paid = entry.expensePayers?.some(p => p.personId === myId);
+    return `
+      <div class="balance-item" style="align-items:flex-start;gap:10px;padding:10px 0">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${actionIcon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;line-height:1.4">
+            <strong>${esc(isMe ? 'You' : byName)}</strong>
+            <span style="color:${actionColor};font-weight:600"> ${entry.action} </span>
+            <strong>${esc(entry.expenseDesc)}</strong>
+            <span style="color:var(--text-muted)"> · ${S.currency}${fmt(entry.expenseAmount)}</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${fmtDate(entry.at.split('T')[0])} · ${new Date(entry.at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div>
+          ${myId && (involved || paid) ? `<div style="font-size:11px;color:var(--primary);font-weight:600;margin-top:2px">${paid?'💳 You paid':''}${paid&&involved?' · ':''}${involved?'👤 Involves you':''}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderActivityInline() {
+  const el = document.getElementById('activity-inline-content');
+  if (!el) return;
+  const myId = getMyId();
+  const log = S.auditLog || [];
+
+  const myPerson = getMyPerson();
+  const identityRow = `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0 12px;border-bottom:1px solid var(--border);margin-bottom:4px">
+    <div style="font-size:12px;color:var(--text-muted)">Viewing as <strong style="color:var(--primary)">${myPerson ? esc(myPerson.name) : 'Not set'}</strong></div>
+    <button class="btn btn-ghost btn-sm" style="font-size:11px;padding:4px 10px" onclick="openIdentityModal()">Change</button>
+  </div>`;
+
+  el.innerHTML = identityRow + buildActivityRows(log, myId);
+}
+
 function renderActivity() {
-  const el = document.getElementById('activity-content');
+  renderActivityInline();
+}
   const log = S.auditLog || [];
 
   const myId = getMyId();
@@ -3197,6 +3366,45 @@ function checkAndNotify(prevState, newState) {
   });
 }
 
+const NOTIF_BANNER_DISMISSED_KEY = 'expensplit_notif_banner_dismissed';
+
+function updateNotifBanner() {
+  const banner = document.getElementById('notif-banner');
+  if (!banner) return;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  if (isIOS) { banner.style.display = 'none'; return; }
+  const dismissed = localStorage.getItem(NOTIF_BANNER_DISMISSED_KEY) === '1';
+  const enabled = notifEnabled();
+  const supported = 'Notification' in window;
+  if (!supported || enabled || dismissed) {
+    banner.style.display = 'none';
+  } else {
+    banner.style.display = 'flex';
+  }
+}
+
+async function bannerEnableNotif() {
+  if (!getMyId()) {
+    toast('Go to the Activity log and select who you are first');
+    return;
+  }
+  const granted = await requestNotificationPermission();
+  if (granted) {
+    setNotifEnabled(true);
+    renderNotifToggle();
+    updateNotifBanner();
+    toast('Notifications turned on!');
+    fireNotification('Expensplit', 'You\'ll now be notified about expenses involving you', 'test');
+  } else {
+    updateNotifBanner();
+  }
+}
+
+function dismissNotifBanner() {
+  localStorage.setItem(NOTIF_BANNER_DISMISSED_KEY, '1');
+  document.getElementById('notif-banner').style.display = 'none';
+}
+
 function renderNotifToggle() {
   const el = document.getElementById('notif-toggle-wrap');
   if (!el) return;
@@ -3225,12 +3433,13 @@ function renderNotifToggle() {
 
 async function toggleNotifications() {
   if (!getMyId()) {
-    toast('Select who you are in the Activity tab first');
+    toast('Select who you are in the Activity log first');
     return;
   }
   if (notifEnabled()) {
     setNotifEnabled(false);
     renderNotifToggle();
+    updateNotifBanner();
     toast('Notifications turned off');
     return;
   }
@@ -3238,10 +3447,12 @@ async function toggleNotifications() {
   if (granted) {
     setNotifEnabled(true);
     renderNotifToggle();
+    updateNotifBanner();
     toast('Notifications turned on!');
     fireNotification('Expensplit', 'You\'ll now be notified about expenses involving you', 'test');
   } else {
     renderNotifToggle();
+    updateNotifBanner();
   }
 }
 
@@ -3249,6 +3460,7 @@ function renderAll() {
   document.getElementById('currency-prefix').textContent = S.currency;
   updateHeaderName();
   renderPeople(); renderExpenses(); renderBalances(); renderSettle();
+  updateNotifBanner();
 }
 
 // Real-time listener — updates UI when another user saves
