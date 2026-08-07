@@ -3275,65 +3275,6 @@ function renderActivityInline() {
   el.innerHTML = identityRow + buildActivityRows(log, myId);
 }
 
-function renderActivity() {
-  renderActivityInline();
-}
-  const log = S.auditLog || [];
-
-  const myId = getMyId();
-  const myPerson = getMyPerson();
-
-  // Identity selector card
-  const identityCard = `
-    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <div>
-        <div style="font-size:13px;font-weight:600;margin-bottom:2px">You are viewing as</div>
-        <div style="font-size:14px;color:var(--primary);font-weight:700">
-          ${myPerson ? esc(myPerson.name) : '<span style="color:var(--text-muted)">Not set</span>'}
-        </div>
-      </div>
-      <button class="btn btn-outline btn-sm" onclick="openIdentityModal()">Change</button>
-    </div>`;
-
-  if (!log.length) {
-    el.innerHTML = identityCard + `<div class="empty">
-      <div class="empty-icon">📋</div>
-      <h3>No activity yet</h3>
-      <p>Expense changes will appear here</p>
-    </div>`;
-    return;
-  }
-
-  const rows = log.map(entry => {
-    const byPerson = entry.byPersonId ? S.people.find(p => p.id === entry.byPersonId) : null;
-    const byName = byPerson ? byPerson.name : 'Someone';
-    const isMe = entry.byPersonId && entry.byPersonId === myId;
-    const actionColor = entry.action === 'added' ? 'var(--success)' : entry.action === 'deleted' ? 'var(--danger)' : 'var(--warning)';
-    const actionIcon = entry.action === 'added' ? '➕' : entry.action === 'deleted' ? '🗑️' : '✏️';
-    const actionLabel = entry.action === 'added' ? 'added' : entry.action === 'deleted' ? 'deleted' : 'edited';
-
-    const involved = entry.expenseSplits && entry.expenseSplits.some(s => s.personId === myId);
-    const paid = entry.expensePayers && entry.expensePayers.some(p => p.personId === myId);
-
-    return `
-      <div class="balance-item" style="align-items:flex-start;gap:12px">
-        <div style="width:36px;height:36px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${actionIcon}</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:14px;line-height:1.4">
-            <strong>${esc(isMe ? 'You' : byName)}</strong>
-            <span style="color:${actionColor};font-weight:600"> ${actionLabel} </span>
-            <strong>${esc(entry.expenseDesc)}</strong>
-            <span style="color:var(--text-muted)"> · ${S.currency}${fmt(entry.expenseAmount)}</span>
-          </div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:3px">${fmtDate(entry.at.split('T')[0])} · ${new Date(entry.at).toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'})}</div>
-          ${myId && (involved || paid) ? `<div style="font-size:11px;color:var(--primary);font-weight:600;margin-top:3px">${paid ? '💳 You paid' : ''}${paid && involved ? ' · ' : ''}${involved ? '👤 Involves you' : ''}</div>` : ''}
-        </div>
-      </div>`;
-  }).join('');
-
-  el.innerHTML = identityCard + `<div class="card"><div class="card-title">Activity</div>${rows}</div>`;
-}
-
 // ════════════════════════════════════════════════
 // IDENTITY MODAL
 // ════════════════════════════════════════════════
@@ -3354,7 +3295,7 @@ function selectIdentity(personId) {
   document.getElementById('identity-modal').style.display = 'none';
   const name = personName(personId);
   toast(`You are now ${name}`);
-  renderActivity();
+  renderActivityInline();
   checkNotificationSetup();
 }
 
