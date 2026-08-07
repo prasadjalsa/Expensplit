@@ -641,6 +641,7 @@
   <div class="tab" onclick="switchTab('expenses')">&#x1f9fe; Expenses</div>
   <div class="tab" onclick="switchTab('balances')">&#x2696;&#xfe0f; Balances</div>
   <div class="tab" onclick="switchTab('settle')">&#x2705; Settle Up</div>
+  <div class="tab" onclick="switchTab('activity')">&#x1f4cb; Activity</div>
   <div class="tab" onclick="switchTab('help')">&#x2753; Help</div>
 </nav>
 
@@ -750,6 +751,11 @@
     <div id="settle-content"></div>
   </div>
 
+  <!-- Activity section -->
+  <div id="sec-activity" class="section">
+    <div id="activity-content"></div>
+  </div>
+
   <!-- Help / Docs section -->
   <div id="sec-help" class="section">
 
@@ -770,6 +776,8 @@
         <a href="#h-signoff">Sign-offs</a>
         <a href="#h-settle">Settle up</a>
         <a href="#h-export">Export CSV</a>
+        <a href="#h-activity">Activity log</a>
+        <a href="#h-notifications">Notifications</a>
         <a href="#h-share">Share room</a>
         <a href="#h-settings">Settings</a>
         <a href="#h-darkmode">Dark mode</a>
@@ -792,7 +800,9 @@
         <li><strong>Category icons</strong> — auto-picked or chosen manually per expense</li>
         <li><strong>Filter &amp; sort</strong> — search, filter by person, sort by date or amount</li>
         <li><strong>CSV export</strong> — download the full expense and payment history</li>
-        <li><strong>Dark mode</strong> — easy on the eyes, follows your phone's setting</li>
+        <li><strong>Dark mode</strong> — follows system preference, easy on the eyes</li>
+        <li><strong>Activity log</strong> — full history of who added, edited, or deleted expenses</li>
+        <li><strong>Notifications</strong> — get notified when expenses involving you change</li>
         <li><strong>Works like an app</strong> — add to your home screen on Android or iPhone</li>
       </ul>
     </div>
@@ -968,6 +978,38 @@
         </tbody>
       </table>
       <div class="help-note"><strong>Not seeing the buttons?</strong>They only appear when everyone has confirmed their sign-off. Check the Sign-offs card at the top of the Settle Up tab.</div>
+    </div>
+
+    <!-- Activity Log -->
+    <div class="card" id="h-activity">
+      <div class="help-h2"><span class="help-icon">📋</span>Activity Log</div>
+      <p class="help-p">The Activity tab shows a full history of every expense that was added, edited, or deleted — who did it and when.</p>
+      <div class="help-h3">Setting up your identity</div>
+      <p class="help-p">When you open the app for the first time, you'll be asked <strong>"Who are you?"</strong> — pick your name from the group. This lets the app highlight activity that involves you and send you relevant notifications.</p>
+      <div class="help-tip"><strong>Tip</strong>You can change your identity at any time from the Activity tab — tap the <strong>Change</strong> button next to your name.</div>
+      <div class="help-note"><strong>Note</strong>Your identity is saved on this device only. If you open the app on a different phone or browser, you'll be asked again.</div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="card" id="h-notifications">
+      <div class="help-h2"><span class="help-icon">🔔</span>Notifications</div>
+      <p class="help-p">Turn on notifications to get an alert whenever an expense involving you is added, edited, or deleted — even when the app is in the background.</p>
+      <ol class="help-steps">
+        <li><div><div class="st">Set your identity first</div><div class="sd">Go to the Activity tab and select who you are. Notifications only work if the app knows which person you are.</div></div></li>
+        <li><div><div class="st">Open Settings ⚙️ → Notifications</div><div class="sd">Tap <strong>Turn On</strong>. Your browser will ask for permission — tap Allow.</div></div></li>
+        <li><div><div class="st">You're set</div><div class="sd">A test notification confirms it's working. From now on you'll be notified when expenses involving you change.</div></div></li>
+      </ol>
+      <div class="help-h3">Platform support</div>
+      <table class="help-table">
+        <thead><tr><th>Device</th><th>Support</th></tr></thead>
+        <tbody>
+          <tr><td>Android (Chrome)</td><td>✅ Full — works even when app is in background</td></tr>
+          <tr><td>iPhone (Safari, installed as PWA)</td><td>✅ Works on iOS 16.4+</td></tr>
+          <tr><td>Desktop (Chrome / Edge)</td><td>✅ Full support</td></tr>
+          <tr><td>iPhone (Chrome / Firefox)</td><td>❌ Not supported — use Safari instead</td></tr>
+        </tbody>
+      </table>
+      <div class="help-note"><strong>Blocked?</strong>If you accidentally tapped "Block", go to your browser settings → Site permissions → Notifications → find this site and set it to Allow.</div>
     </div>
 
     <!-- Share room -->
@@ -1221,6 +1263,10 @@
         style="max-width:100px">
     </div>
     <div class="form-group">
+      <label class="form-label">Notifications</label>
+      <div id="notif-toggle-wrap"></div>
+    </div>
+    <div class="form-group">
       <label class="form-label">Danger Zone</label>
       <div style="display:flex;flex-direction:column;gap:10px">
         <div>
@@ -1322,6 +1368,20 @@
   </div>
 </div>
 
+<!-- ═══ WHO ARE YOU MODAL ═══ -->
+<div id="identity-modal" class="overlay overlay-center" style="display:none">
+  <div class="modal modal-center" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <span class="modal-title">👤 Who are you?</span>
+    </div>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;line-height:1.55">
+      Select your name so the app knows whose expenses to notify you about and who made each change.
+    </p>
+    <div id="identity-list"></div>
+    <button class="btn btn-ghost btn-full" style="margin-top:10px" onclick="closeIdentityModal()">Skip for now</button>
+  </div>
+</div>
+
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -1388,7 +1448,7 @@ const STORE_KEY = 'expensplit_v1';
   }
   localStorage.removeItem(OLD_KEY);
 })();
-let S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
+let S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {}, auditLog: [] };
 
 function load() {
   try { const d = localStorage.getItem(STORE_KEY); if (d) S = JSON.parse(d); } catch (_) {}
@@ -1432,6 +1492,41 @@ function uid() {
 }
 
 // ════════════════════════════════════════════════
+// IDENTITY  — who is using this browser?
+// ════════════════════════════════════════════════
+function getMyId() {
+  return localStorage.getItem('expensplit_myid_' + ROOM_ID) || null;
+}
+function setMyId(personId) {
+  localStorage.setItem('expensplit_myid_' + ROOM_ID, personId);
+}
+function getMyPerson() {
+  const id = getMyId();
+  return id ? S.people.find(p => p.id === id) : null;
+}
+
+// ════════════════════════════════════════════════
+// AUDIT LOG
+// ════════════════════════════════════════════════
+function addAuditEntry(action, expense) {
+  if (!S.auditLog) S.auditLog = [];
+  const myId = getMyId();
+  S.auditLog.unshift({
+    id: uid(),
+    action,           // 'added' | 'edited' | 'deleted'
+    byPersonId: myId || null,
+    expenseId: expense.id,
+    expenseDesc: expense.desc,
+    expenseAmount: expense.amount,
+    expensePayers: expense.payers,
+    expenseSplits: expense.splits,
+    at: new Date().toISOString()
+  });
+  // Keep last 100 entries
+  if (S.auditLog.length > 100) S.auditLog = S.auditLog.slice(0, 100);
+}
+
+// ════════════════════════════════════════════════
 // AVATAR
 // ════════════════════════════════════════════════
 const COLORS = ['#e53e3e','#dd6b20','#d69e2e','#38a169','#319795',
@@ -1452,7 +1547,7 @@ function avatarHtml(id, size = '') {
 // ════════════════════════════════════════════════
 // TABS
 // ════════════════════════════════════════════════
-const TAB_IDS = ['people','expenses','balances','settle','help'];
+const TAB_IDS = ['people','expenses','balances','settle','activity','help'];
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach((el, i) =>
     el.classList.toggle('active', TAB_IDS[i] === tab));
@@ -1463,6 +1558,7 @@ function switchTab(tab) {
   if (tab === 'expenses') renderExpenses();
   if (tab === 'balances') renderBalances();
   if (tab === 'settle')   renderSettle();
+  if (tab === 'activity') renderActivity();
 }
 
 // ════════════════════════════════════════════════
@@ -1898,8 +1994,10 @@ function saveExpense() {
   const record = { id: editingId || uid(), desc, amount, date, payers, splits, splitType, icon: selectedIcon || expIconAuto(desc) };
   if (editingId) {
     const idx = S.expenses.findIndex(e => e.id === editingId);
+    addAuditEntry('edited', record);
     S.expenses[idx] = record;
   } else {
+    addAuditEntry('added', record);
     S.expenses.push(record);
   }
   save(); closeExpModal(); renderExpenses();
@@ -2060,6 +2158,8 @@ function editExpense() {
 
 function deleteExpense() {
   if (!confirm('Delete this expense?')) return;
+  const e = S.expenses.find(x => x.id === viewingId);
+  if (e) addAuditEntry('deleted', e);
   S.expenses = S.expenses.filter(e => e.id !== viewingId);
   save(); closeDetailModal(); renderExpenses();
   toast('Expense deleted');
@@ -2444,6 +2544,7 @@ function deleteSettlement(id) {
 function openSettings() {
   document.getElementById('settings-name').value = S.name || '';
   document.getElementById('currency-input').value = S.currency;
+  renderNotifToggle();
   document.getElementById('settings-modal').style.display = 'flex';
 }
 function closeSettings() { document.getElementById('settings-modal').style.display = 'none'; }
@@ -2836,6 +2937,248 @@ function fallbackCopy(url) {
 // ════════════════════════════════════════════════
 // INIT  — load from Firestore, fall back to localStorage
 // ════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+// ACTIVITY LOG
+// ════════════════════════════════════════════════
+function renderActivity() {
+  const el = document.getElementById('activity-content');
+  const log = S.auditLog || [];
+
+  const myId = getMyId();
+  const myPerson = getMyPerson();
+
+  // Identity selector card
+  const identityCard = `
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:2px">You are viewing as</div>
+        <div style="font-size:14px;color:var(--primary);font-weight:700">
+          ${myPerson ? esc(myPerson.name) : '<span style="color:var(--text-muted)">Not set</span>'}
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="openIdentityModal()">Change</button>
+    </div>`;
+
+  if (!log.length) {
+    el.innerHTML = identityCard + `<div class="empty">
+      <div class="empty-icon">📋</div>
+      <h3>No activity yet</h3>
+      <p>Expense changes will appear here</p>
+    </div>`;
+    return;
+  }
+
+  const rows = log.map(entry => {
+    const byPerson = entry.byPersonId ? S.people.find(p => p.id === entry.byPersonId) : null;
+    const byName = byPerson ? byPerson.name : 'Someone';
+    const isMe = entry.byPersonId && entry.byPersonId === myId;
+    const actionColor = entry.action === 'added' ? 'var(--success)' : entry.action === 'deleted' ? 'var(--danger)' : 'var(--warning)';
+    const actionIcon = entry.action === 'added' ? '➕' : entry.action === 'deleted' ? '🗑️' : '✏️';
+    const actionLabel = entry.action === 'added' ? 'added' : entry.action === 'deleted' ? 'deleted' : 'edited';
+
+    const involved = entry.expenseSplits && entry.expenseSplits.some(s => s.personId === myId);
+    const paid = entry.expensePayers && entry.expensePayers.some(p => p.personId === myId);
+
+    return `
+      <div class="balance-item" style="align-items:flex-start;gap:12px">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${actionIcon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;line-height:1.4">
+            <strong>${esc(isMe ? 'You' : byName)}</strong>
+            <span style="color:${actionColor};font-weight:600"> ${actionLabel} </span>
+            <strong>${esc(entry.expenseDesc)}</strong>
+            <span style="color:var(--text-muted)"> · ${S.currency}${fmt(entry.expenseAmount)}</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px">${fmtDate(entry.at.split('T')[0])} · ${new Date(entry.at).toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'})}</div>
+          ${myId && (involved || paid) ? `<div style="font-size:11px;color:var(--primary);font-weight:600;margin-top:3px">${paid ? '💳 You paid' : ''}${paid && involved ? ' · ' : ''}${involved ? '👤 Involves you' : ''}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  el.innerHTML = identityCard + `<div class="card"><div class="card-title">Activity</div>${rows}</div>`;
+}
+
+// ════════════════════════════════════════════════
+// IDENTITY MODAL
+// ════════════════════════════════════════════════
+function openIdentityModal() {
+  if (!S.people.length) { toast('Add members first'); return; }
+  const myId = getMyId();
+  document.getElementById('identity-list').innerHTML = S.people.map(p => `
+    <div class="person-check-row" onclick="selectIdentity('${p.id}')" style="border-radius:10px;padding:10px 12px;margin-bottom:6px;background:${p.id === myId ? 'var(--primary-light)' : 'var(--bg)'}">
+      ${avatarHtml(p.id)}
+      <span class="person-check-label">${esc(p.name)}</span>
+      ${p.id === myId ? '<span style="color:var(--primary);font-weight:700;font-size:13px">✓ You</span>' : ''}
+    </div>`).join('');
+  document.getElementById('identity-modal').style.display = 'flex';
+}
+
+function selectIdentity(personId) {
+  setMyId(personId);
+  document.getElementById('identity-modal').style.display = 'none';
+  const name = personName(personId);
+  toast(`You are now ${name}`);
+  renderActivity();
+  checkNotificationSetup();
+}
+
+function closeIdentityModal() {
+  document.getElementById('identity-modal').style.display = 'none';
+}
+
+function maybePromptIdentity() {
+  if (S.people.length && !getMyId()) {
+    setTimeout(() => openIdentityModal(), 800);
+  }
+}
+
+// ════════════════════════════════════════════════
+// NOTIFICATIONS
+// ════════════════════════════════════════════════
+const NOTIF_KEY = 'expensplit_notif_' + ROOM_ID;
+
+function notifEnabled() {
+  return localStorage.getItem(NOTIF_KEY) === '1';
+}
+
+function setNotifEnabled(val) {
+  localStorage.setItem(NOTIF_KEY, val ? '1' : '0');
+}
+
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    toast('Notifications not supported on this browser');
+    return false;
+  }
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') {
+    toast('Notifications blocked — enable in browser settings');
+    return false;
+  }
+  const result = await Notification.requestPermission();
+  return result === 'granted';
+}
+
+async function checkNotificationSetup() {
+  if (!notifEnabled()) return;
+  if (!getMyId()) return;
+  if (Notification.permission !== 'granted') {
+    const granted = await requestNotificationPermission();
+    if (!granted) { setNotifEnabled(false); renderNotifToggle(); }
+  }
+}
+
+function fireNotification(title, body, tag) {
+  if (Notification.permission !== 'granted') return;
+  if (!notifEnabled()) return;
+  const n = new Notification(title, {
+    body,
+    icon: './icon.svg',
+    badge: './icon.svg',
+    tag: tag || 'expensplit',
+    renotify: true
+  });
+  n.onclick = () => { window.focus(); n.close(); };
+}
+
+function checkAndNotify(prevState, newState) {
+  const myId = getMyId();
+  if (!myId || !notifEnabled()) return;
+  if (Notification.permission !== 'granted') return;
+
+  const prevExpenses = (prevState.expenses || []);
+  const newExpenses = (newState.expenses || []);
+
+  // Find added expenses
+  newExpenses.forEach(e => {
+    const isNew = !prevExpenses.find(p => p.id === e.id);
+    if (!isNew) return;
+    const involvesMe = e.splits.some(s => s.personId === myId) || e.payers.some(p => p.personId === myId);
+    if (!involvesMe) return;
+    const paidBy = e.payers.map(p => personName(p.personId)).join(', ');
+    fireNotification(
+      `New expense: ${e.desc}`,
+      `${S.currency}${fmt(e.amount)} · Paid by ${paidBy}`,
+      'exp-' + e.id
+    );
+  });
+
+  // Find edited expenses
+  newExpenses.forEach(e => {
+    const prev = prevExpenses.find(p => p.id === e.id);
+    if (!prev) return;
+    if (JSON.stringify(prev) === JSON.stringify(e)) return;
+    const involvesMe = e.splits.some(s => s.personId === myId) || e.payers.some(p => p.personId === myId);
+    if (!involvesMe) return;
+    fireNotification(
+      `Expense updated: ${e.desc}`,
+      `${S.currency}${fmt(e.amount)} was edited`,
+      'exp-edit-' + e.id
+    );
+  });
+
+  // Find deleted expenses
+  prevExpenses.forEach(e => {
+    const stillExists = newExpenses.find(n => n.id === e.id);
+    if (stillExists) return;
+    const involvesMe = e.splits.some(s => s.personId === myId) || e.payers.some(p => p.personId === myId);
+    if (!involvesMe) return;
+    fireNotification(
+      `Expense deleted: ${e.desc}`,
+      `${S.currency}${fmt(e.amount)} was removed`,
+      'exp-del-' + e.id
+    );
+  });
+}
+
+function renderNotifToggle() {
+  const el = document.getElementById('notif-toggle-wrap');
+  if (!el) return;
+  const enabled = notifEnabled();
+  const supported = 'Notification' in window;
+  const permission = supported ? Notification.permission : 'denied';
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:13px;font-weight:600">Expense Notifications</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">
+          ${!supported ? 'Not supported on this browser' :
+            permission === 'denied' ? 'Blocked — enable in browser/OS settings' :
+            enabled ? 'You\'ll be notified when expenses involving you change' :
+            'Get notified when expenses involving you are added or changed'}
+        </div>
+      </div>
+      <button class="btn btn-sm ${enabled ? 'btn-danger' : 'btn-primary'}"
+        onclick="toggleNotifications()"
+        ${!supported || permission === 'denied' ? 'disabled' : ''}>
+        ${enabled ? 'Turn Off' : 'Turn On'}
+      </button>
+    </div>
+    ${permission === 'denied' ? '' : !getMyId() && !enabled ? '<div class="hint" style="margin-top:6px">⚠️ Select "Who are you?" in the Activity tab first</div>' : ''}`;
+}
+
+async function toggleNotifications() {
+  if (!getMyId()) {
+    toast('Select who you are in the Activity tab first');
+    return;
+  }
+  if (notifEnabled()) {
+    setNotifEnabled(false);
+    renderNotifToggle();
+    toast('Notifications turned off');
+    return;
+  }
+  const granted = await requestNotificationPermission();
+  if (granted) {
+    setNotifEnabled(true);
+    renderNotifToggle();
+    toast('Notifications turned on!');
+    fireNotification('Expensplit', 'You\'ll now be notified about expenses involving you', 'test');
+  } else {
+    renderNotifToggle();
+  }
+}
+
 function renderAll() {
   document.getElementById('currency-prefix').textContent = S.currency;
   updateHeaderName();
@@ -2845,11 +3188,13 @@ function renderAll() {
 // Real-time listener — updates UI when another user saves
 groupDoc.onSnapshot({ includeMetadataChanges: true }, snap => {
   if (snap.metadata.hasPendingWrites) return; // our own write, skip
-  if (snap.metadata.fromCache) { setSyncPill('error'); return; } // no server connection
+  if (snap.metadata.fromCache) { setSyncPill('error'); return; }
   setSyncPill('live');
   if (!snap.exists || !snap.data().state) return;
+  const prevState = S;
   S = snap.data().state;
   localStorage.setItem(STORE_KEY, JSON.stringify(S));
+  checkAndNotify(prevState, S);
   renderAll();
 }, () => setSyncPill('error'));
 
@@ -2864,11 +3209,13 @@ groupDoc.get({ source: 'server' })
       S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
     }
     renderAll();
+    maybePromptIdentity();
   })
   .catch(() => {
     load();
     setSyncPill('error');
     renderAll();
+    maybePromptIdentity();
   });
 
 // ════════════════════════════════════════════════
