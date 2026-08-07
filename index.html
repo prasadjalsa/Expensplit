@@ -445,6 +445,13 @@
     }
     .fab:hover { transform: scale(1.07); }
 
+    /* ── Confetti canvas ── */
+    #confetti-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; z-index: 500;
+    }
+
     /* ── Progress bar ── */
     .progress-wrap {
       background: var(--border);
@@ -1163,6 +1170,9 @@
   </div><!-- /sec-help -->
 
 </main>
+
+<!-- Confetti canvas -->
+<canvas id="confetti-canvas" style="display:none"></canvas>
 
 <!-- Notification banner -->
 <div id="notif-banner" style="display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
@@ -2669,6 +2679,9 @@ function recordSettlement() {
   const note = document.getElementById('s-note').value.trim();
   if (!amount || amount <= 0) { toast('Enter a valid amount'); return; }
   if (!date) { toast('Select a date'); return; }
+
+  const prevTxnCount = minSettlements({ ...calcNet() }).length;
+
   if (settlePayload.editId) {
     const s = S.settlements.find(x => x.id === settlePayload.editId);
     if (s) { s.amount = +amount.toFixed(2); s.date = date; s.note = note; }
@@ -2683,6 +2696,8 @@ function recordSettlement() {
     toast('Payment recorded!');
   }
   save(); closeSettleModal(); renderSettle(); renderBalances();
+  const newTxnCount = minSettlements({ ...calcNet() }).length;
+  maybeConfetti(prevTxnCount, newTxnCount);
 }
 
 function editSettlement(id) {
@@ -3534,6 +3549,70 @@ groupDoc.get({ source: 'server' })
     maybeShowPwaRoomModal();
     maybePromptIdentity();
   });
+
+// ════════════════════════════════════════════════
+// CONFETTI
+// ════════════════════════════════════════════════
+let _confettiAlreadyFired = false;
+
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+
+  const COLORS = ['#5bc5a7','#38a169','#3182ce','#d69e2e','#e05c4b','#6b46c1','#dd6b20'];
+  const pieces = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height,
+    w: 8 + Math.random() * 8,
+    h: 4 + Math.random() * 4,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    rotation: Math.random() * Math.PI * 2,
+    rotSpeed: (Math.random() - 0.5) * 0.15,
+    vx: (Math.random() - 0.5) * 3,
+    vy: 2 + Math.random() * 4,
+    opacity: 1
+  }));
+
+  let frame;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let done = true;
+    pieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rotation += p.rotSpeed;
+      if (p.y > canvas.height * 0.7) p.opacity -= 0.02;
+      if (p.opacity > 0) done = false;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    if (!done) {
+      frame = requestAnimationFrame(draw);
+    } else {
+      canvas.style.display = 'none';
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  if (frame) cancelAnimationFrame(frame);
+  draw();
+}
+
+function maybeConfetti(prevTxnCount, newTxnCount) {
+  // Fire when outstanding transactions just reached zero (weren't zero before)
+  if (newTxnCount === 0 && prevTxnCount > 0 && !_confettiAlreadyFired) {
+    _confettiAlreadyFired = true;
+    setTimeout(launchConfetti, 300);
+    setTimeout(() => { _confettiAlreadyFired = false; }, 10000);
+  }
+}
 
 // ════════════════════════════════════════════════
 // SWIPE TO SWITCH TABS
