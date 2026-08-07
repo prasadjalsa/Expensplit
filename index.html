@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#5bc5a7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Expensplit">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
   <title>Expensplit</title>
   <style>
     :root {
@@ -24,6 +30,35 @@
       --radius: 14px;
       --radius-sm: 8px;
     }
+    body.dark {
+      --primary: #5bc5a7;
+      --primary-dark: #3da88a;
+      --primary-light: #1a3530;
+      --danger: #fc8181;
+      --danger-light: #2d1a1a;
+      --success: #68d391;
+      --success-light: #1a2d1f;
+      --warning: #f6ad55;
+      --bg: #1a202c;
+      --card: #2d3748;
+      --text: #f7fafc;
+      --text-muted: #a0aec0;
+      --border: #4a5568;
+      --shadow: 0 2px 8px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    body.dark .input,
+    body.dark .payer-select,
+    body.dark .filter-select,
+    body.dark .split-input,
+    body.dark .payer-amount-input { background: #3a4556; color: var(--text); border-color: var(--border); }
+    body.dark .tabs { background: var(--card); }
+    body.dark .modal,
+    body.dark .modal-center { background: var(--card); }
+    body.dark .icon-btn { background: var(--bg); border-color: var(--border); }
+    body.dark .qr-upload-area { border-color: var(--border); }
+    body.dark .help-table th { background: var(--primary-light); }
+    body.dark .help-note { background: #2d2a1a; border-color: #f6e05e; color: #fefcbf; }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -393,7 +428,7 @@
 
     /* ── FAB ── */
     .fab {
-      position: fixed; bottom: 24px; right: 20px;
+      position: fixed; bottom: calc(24px + env(safe-area-inset-bottom)); right: 20px;
       width: 54px; height: 54px; border-radius: 50%;
       background: var(--primary); color: white;
       font-size: 26px; border: none; cursor: pointer;
@@ -416,7 +451,7 @@
 
     /* ── Toast ── */
     .toast {
-      position: fixed; bottom: 88px; left: 50%;
+      position: fixed; bottom: calc(88px + env(safe-area-inset-bottom)); left: 50%;
       transform: translateX(-50%) translateY(8px);
       background: #1a202c; color: white;
       padding: 10px 20px; border-radius: 24px;
@@ -532,6 +567,32 @@
     }
     .upi-warn { font-size: 11px; color: var(--warning); font-weight: 600; }
 
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center;
+    }
+    .filter-bar .input { flex: 1; min-width: 140px; }
+    .filter-select {
+      padding: 9px 10px; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 13px;
+      color: var(--text); outline: none; background: white;
+    }
+    .filter-select:focus { border-color: var(--primary); }
+
+    /* ── Category icon picker ── */
+    .icon-grid {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+    }
+    .icon-btn {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      font-size: 20px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .icon-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+    .icon-btn.selected { border-color: var(--primary); background: var(--primary-light); }
+
     /* ── Responsive ── */
     @media (min-width: 640px) {
       .overlay { align-items: center; }
@@ -560,6 +621,8 @@
     <span id="sync-pill" class="sync-pill">Connecting…</span>
   </div>
   <div class="header-actions">
+    <button class="header-btn" id="pwa-install-btn" onclick="installPWA()" title="Install app" style="display:none;font-size:13px;font-weight:700;width:auto;padding:0 10px">📲 Install</button>
+    <button class="header-btn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
     <button class="header-btn" onclick="shareURL()" title="Share link">&#x1f517;</button>
     <button class="header-btn" onclick="openSettings()" title="Settings">&#x2699;&#xfe0f;</button>
   </div>
@@ -653,6 +716,19 @@
 
   <!-- Expenses section -->
   <div id="sec-expenses" class="section">
+    <div class="filter-bar">
+      <input type="text" id="exp-search" class="input" placeholder="🔍 Search expenses…"
+        oninput="renderExpenses()">
+      <select id="exp-filter-person" class="filter-select" onchange="renderExpenses()">
+        <option value="">All people</option>
+      </select>
+      <select id="exp-sort" class="filter-select" onchange="renderExpenses()">
+        <option value="date-desc">Newest first</option>
+        <option value="date-asc">Oldest first</option>
+        <option value="amount-desc">Highest amount</option>
+        <option value="amount-asc">Lowest amount</option>
+      </select>
+    </div>
     <div id="exp-list"></div>
   </div>
 
@@ -980,7 +1056,13 @@
 
       <div class="form-group">
         <label class="form-label">Description</label>
-        <input type="text" id="f-desc" class="input" placeholder="e.g. Dinner, Cab, Groceries…">
+        <input type="text" id="f-desc" class="input" placeholder="e.g. Dinner, Cab, Groceries…"
+          oninput="onDescChange()">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Category Icon</label>
+        <div class="icon-grid" id="icon-grid"></div>
       </div>
 
       <div style="display:flex;gap:10px">
@@ -1250,9 +1332,39 @@ let S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], 
 function load() {
   try { const d = localStorage.getItem(STORE_KEY); if (d) S = JSON.parse(d); } catch (_) {}
 }
+let _lastSavedHash = null;
+
+function stateHash(state) {
+  const s = JSON.stringify(state);
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+  return h;
+}
+
 function save() {
   localStorage.setItem(STORE_KEY, JSON.stringify(S));
-  groupDoc.set({ state: S }).catch(e => console.error('Firestore save:', e));
+  const myHash = stateHash(S);
+  _lastSavedHash = myHash;
+
+  db.runTransaction(tx => tx.get(groupDoc).then(snap => {
+    // If another user saved since our last read, warn before overwriting
+    if (snap.exists) {
+      const remote = snap.data().state;
+      const remoteHash = stateHash(remote);
+      if (_lastSavedHash !== myHash && remoteHash !== stateHash(S)) {
+        // Remote changed independently — surface a toast warning
+        toast('⚠️ Someone else made changes. Reloading…');
+        setTimeout(() => location.reload(), 1800);
+        throw new Error('conflict');
+      }
+    }
+    tx.set(groupDoc, { state: S });
+  })).catch(e => {
+    if (e.message !== 'conflict') {
+      // Transaction failed for non-conflict reason (offline etc) — fall back to set
+      groupDoc.set({ state: S }).catch(err => console.error('Firestore save:', err));
+    }
+  });
 }
 function uid() {
   return Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
@@ -1517,12 +1629,13 @@ function openAddExpense() {
   document.getElementById('f-amount').value = '';
   document.getElementById('f-date').value = today();
   splitType = 'equal';
+  selectedIcon = null;
   document.querySelectorAll('.split-tab').forEach(t =>
     t.classList.toggle('active', t.dataset.st === 'equal'));
   payerRows = [{ id: uid(), personId: S.people[0].id, amount: '' }];
   splitSel = {};
   S.people.forEach(p => { splitSel[p.id] = { checked: true, value: '' }; });
-  drawPayerRows(); drawSplitList();
+  drawPayerRows(); drawSplitList(); drawIconGrid();
   document.getElementById('exp-modal').style.display = 'flex';
 }
 function closeExpModal() { document.getElementById('exp-modal').style.display = 'none'; }
@@ -1721,7 +1834,7 @@ function saveExpense() {
     }));
   }
 
-  const record = { id: editingId || uid(), desc, amount, date, payers, splits, splitType };
+  const record = { id: editingId || uid(), desc, amount, date, payers, splits, splitType, icon: selectedIcon || expIconAuto(desc) };
   if (editingId) {
     const idx = S.expenses.findIndex(e => e.id === editingId);
     S.expenses[idx] = record;
@@ -1730,13 +1843,21 @@ function saveExpense() {
   }
   save(); closeExpModal(); renderExpenses();
   toast(editingId ? 'Expense updated!' : 'Expense added!');
-  editingId = null;
+  editingId = null; selectedIcon = null;
 }
 
 // ════════════════════════════════════════════════
 // EXPENSES LIST
 // ════════════════════════════════════════════════
 function renderExpenses() {
+  // Populate person filter
+  const personSel = document.getElementById('exp-filter-person');
+  if (personSel) {
+    const cur = personSel.value;
+    personSel.innerHTML = '<option value="">All people</option>' +
+      S.people.map(p => `<option value="${p.id}"${p.id === cur ? ' selected' : ''}>${esc(p.name)}</option>`).join('');
+  }
+
   const el = document.getElementById('exp-list');
   if (!S.expenses.length) {
     el.innerHTML = `<div class="empty">
@@ -1746,13 +1867,36 @@ function renderExpenses() {
     </div>`;
     return;
   }
-  const sorted = [...S.expenses].sort((a, b) => b.date.localeCompare(a.date));
-  el.innerHTML = sorted.map(e => {
+
+  const search = (document.getElementById('exp-search')?.value || '').toLowerCase();
+  const filterPerson = document.getElementById('exp-filter-person')?.value || '';
+  const sort = document.getElementById('exp-sort')?.value || 'date-desc';
+
+  let list = [...S.expenses];
+  if (search) list = list.filter(e => e.desc.toLowerCase().includes(search));
+  if (filterPerson) list = list.filter(e =>
+    e.payers.some(p => p.personId === filterPerson) ||
+    e.splits.some(s => s.personId === filterPerson));
+  if (sort === 'date-desc')   list.sort((a, b) => b.date.localeCompare(a.date));
+  if (sort === 'date-asc')    list.sort((a, b) => a.date.localeCompare(b.date));
+  if (sort === 'amount-desc') list.sort((a, b) => b.amount - a.amount);
+  if (sort === 'amount-asc')  list.sort((a, b) => a.amount - b.amount);
+
+  if (!list.length) {
+    el.innerHTML = `<div class="empty">
+      <div class="empty-icon">🔍</div>
+      <h3>No matching expenses</h3>
+      <p>Try a different search or filter</p>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = list.map(e => {
     const paidBy = [...new Set(e.payers.map(p => p.personId))]
       .map(id => personName(id)).join(', ');
     return `
       <div class="expense-card" onclick="showDetail('${e.id}')">
-        <div class="expense-icon">${expIcon(e.desc)}</div>
+        <div class="expense-icon">${expIcon(e.desc, e.icon)}</div>
         <div class="expense-body">
           <div class="expense-desc">${esc(e.desc)}</div>
           <div class="expense-meta">Paid by ${esc(paidBy)} · ${fmtDate(e.date)}</div>
@@ -1835,6 +1979,7 @@ function editExpense() {
   document.getElementById('f-date').value = e.date;
   payerRows = e.payers.map(p => ({ id: uid(), personId: p.personId, amount: p.amount.toString() }));
   splitType = e.splitType;
+  selectedIcon = e.icon || null;
   document.querySelectorAll('.split-tab').forEach(t =>
     t.classList.toggle('active', t.dataset.st === splitType));
   splitSel = {};
@@ -1848,7 +1993,7 @@ function editExpense() {
     }
     splitSel[p.id] = { checked: !!s, value: val };
   });
-  drawPayerRows(); drawSplitList();
+  drawPayerRows(); drawSplitList(); drawIconGrid();
   document.getElementById('exp-modal').style.display = 'flex';
 }
 
@@ -2053,6 +2198,7 @@ function renderSettle() {
             <div style="font-size:11px;color:var(--text-muted)">${fmtDate(s.date)}${s.note ? ' · ' + esc(s.note) : ''}</div>
           </div>
           <span style="font-weight:700;color:var(--success)">${S.currency}${fmt(s.amount)}</span>
+          <button class="btn-icon" onclick="editSettlement('${s.id}')" title="Edit" style="font-size:13px">&#x270f;&#xfe0f;</button>
           <button class="btn-icon" onclick="deleteSettlement('${s.id}')">&#x2715;</button>
         </div>`).join('')}
     </div>`;
@@ -2101,8 +2247,11 @@ function proceedSettle() {
   }
 }
 
-function openSettleForm(fromId, toId, amount) {
-  settlePayload = { fromId, toId };
+function openSettleForm(fromId, toId, amount, editId = null) {
+  settlePayload = { fromId, toId, editId };
+  const existing = editId ? S.settlements.find(s => s.id === editId) : null;
+  document.getElementById('settle-modal').querySelector('.modal-title').textContent =
+    editId ? 'Edit Payment' : 'Record Payment';
   document.getElementById('settle-form-body').innerHTML = `
     <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:8px 0 20px">
       <div style="text-align:center">
@@ -2120,16 +2269,17 @@ function openSettleForm(fromId, toId, amount) {
       <div class="input-prefix-wrap">
         <span class="input-prefix">${esc(S.currency)}</span>
         <input type="number" id="s-amount" class="input input-with-prefix"
-          value="${fmt(amount)}" min="0" step="0.01">
+          value="${existing ? fmt(existing.amount) : fmt(amount)}" min="0" step="0.01">
       </div>
     </div>
     <div class="form-group">
       <label class="form-label">Date</label>
-      <input type="date" id="s-date" class="input" value="${today()}">
+      <input type="date" id="s-date" class="input" value="${existing ? existing.date : today()}">
     </div>
     <div class="form-group">
       <label class="form-label">Note (optional)</label>
-      <input type="text" id="s-note" class="input" placeholder="Bank transfer, Cash…">
+      <input type="text" id="s-note" class="input" placeholder="Bank transfer, Cash…"
+        value="${existing ? esc(existing.note || '') : ''}">
     </div>`;
   document.getElementById('settle-modal').style.display = 'flex';
 }
@@ -2141,14 +2291,26 @@ function recordSettlement() {
   const note = document.getElementById('s-note').value.trim();
   if (!amount || amount <= 0) { toast('Enter a valid amount'); return; }
   if (!date) { toast('Select a date'); return; }
-  S.settlements.push({
-    id: uid(),
-    fromPersonId: settlePayload.fromId,
-    toPersonId: settlePayload.toId,
-    amount: +amount.toFixed(2), date, note
-  });
+  if (settlePayload.editId) {
+    const s = S.settlements.find(x => x.id === settlePayload.editId);
+    if (s) { s.amount = +amount.toFixed(2); s.date = date; s.note = note; }
+    toast('Payment updated!');
+  } else {
+    S.settlements.push({
+      id: uid(),
+      fromPersonId: settlePayload.fromId,
+      toPersonId: settlePayload.toId,
+      amount: +amount.toFixed(2), date, note
+    });
+    toast('Payment recorded!');
+  }
   save(); closeSettleModal(); renderSettle(); renderBalances();
-  toast('Payment recorded!');
+}
+
+function editSettlement(id) {
+  const s = S.settlements.find(x => x.id === id);
+  if (!s) return;
+  openSettleForm(s.fromPersonId, s.toPersonId, s.amount, id);
 }
 
 function deleteSettlement(id) {
@@ -2254,24 +2416,59 @@ function toast(msg) {
 function overlayClick(e, id, closeFn) {
   if (e.target === document.getElementById(id)) closeFn();
 }
-function expIcon(desc) {
+// ════════════════════════════════════════════════
+// EXPENSE CATEGORIES
+// ════════════════════════════════════════════════
+const EXPENSE_ICONS = [
+  '🍝','☕','🍺','🎬','🏨','✈️','🚗','🚌',
+  '🛒','💡','🏠','🎉','⚽','💊','🎁','💰',
+  '🍕','🛵','⛽','🎭','🏖️','🎵','📱','🖥️'
+];
+
+let selectedIcon = null;
+
+function drawIconGrid() {
+  const auto = expIconAuto(document.getElementById('f-desc')?.value || '');
+  const grid = document.getElementById('icon-grid');
+  if (!grid) return;
+  grid.innerHTML = EXPENSE_ICONS.map(icon => {
+    const active = selectedIcon ? selectedIcon === icon : auto === icon;
+    return `<button type="button" class="icon-btn${active ? ' selected' : ''}"
+      onclick="pickIcon('${icon}')">${icon}</button>`;
+  }).join('');
+}
+
+function pickIcon(icon) {
+  selectedIcon = icon;
+  drawIconGrid();
+}
+
+function onDescChange() {
+  if (!selectedIcon) drawIconGrid(); // re-highlight auto suggestion
+}
+
+function expIconAuto(desc) {
   const d = (desc || '').toLowerCase();
-  if (/food|dinner|lunch|breakfast|restaurant|meal|eat|pizza|burger/.test(d)) return '&#x1f35d;';
-  if (/coffee|cafe|tea/.test(d)) return '&#x2615;';
-  if (/drink|bar|beer|wine|alcohol|pub/.test(d)) return '&#x1f37a;';
-  if (/movie|cinema|film|ticket|show|event|concert/.test(d)) return '&#x1f3ac;';
-  if (/hotel|stay|airbnb|hostel|resort/.test(d)) return '&#x1f3e8;';
-  if (/flight|air|plane|airport/.test(d)) return '&#x2708;&#xfe0f;';
-  if (/cab|taxi|uber|ola|car|petrol|fuel|drive|parking/.test(d)) return '&#x1f697;';
-  if (/train|metro|bus|auto|transport/.test(d)) return '&#x1f68c;';
-  if (/shop|grocery|market|supermarket|buy/.test(d)) return '&#x1f6d2;';
-  if (/electric|water|gas|bill|util|internet|wifi/.test(d)) return '&#x1f4a1;';
-  if (/rent|house|flat|apartment|home/.test(d)) return '&#x1f3e0;';
-  if (/party|celebrat|birthday/.test(d)) return '&#x1f389;';
-  if (/gym|sport|fitness|game/.test(d)) return '&#x26bd;';
-  if (/med|pharma|doctor|hospital|health/.test(d)) return '&#x1f48a;';
-  if (/gift|present/.test(d)) return '&#x1f381;';
-  return '&#x1f4b0;';
+  if (/food|dinner|lunch|breakfast|restaurant|meal|eat|pizza|burger/.test(d)) return '🍝';
+  if (/coffee|cafe|tea/.test(d)) return '☕';
+  if (/drink|bar|beer|wine|alcohol|pub/.test(d)) return '🍺';
+  if (/movie|cinema|film|ticket|show|event|concert/.test(d)) return '🎬';
+  if (/hotel|stay|airbnb|hostel|resort/.test(d)) return '🏨';
+  if (/flight|air|plane|airport/.test(d)) return '✈️';
+  if (/cab|taxi|uber|ola|car|petrol|fuel|drive|parking/.test(d)) return '🚗';
+  if (/train|metro|bus|auto|transport/.test(d)) return '🚌';
+  if (/shop|grocery|market|supermarket|buy/.test(d)) return '🛒';
+  if (/electric|water|gas|bill|util|internet|wifi/.test(d)) return '💡';
+  if (/rent|house|flat|apartment|home/.test(d)) return '🏠';
+  if (/party|celebrat|birthday/.test(d)) return '🎉';
+  if (/gym|sport|fitness|game/.test(d)) return '⚽';
+  if (/med|pharma|doctor|hospital|health/.test(d)) return '💊';
+  if (/gift|present/.test(d)) return '🎁';
+  return '💰';
+}
+
+function expIcon(desc, icon) {
+  return icon || expIconAuto(desc);
 }
 
 // ════════════════════════════════════════════════
@@ -2386,6 +2583,24 @@ function exportCSV() {
   toast('CSV exported!');
 }
 
+// ════════════════════════════════════════════════
+// DARK MODE
+// ════════════════════════════════════════════════
+function toggleDark() {
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('expensplit_dark', isDark ? '1' : '0');
+  document.getElementById('dark-toggle').textContent = isDark ? '☀️' : '🌙';
+}
+function initDark() {
+  const pref = localStorage.getItem('expensplit_dark');
+  const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (pref === '1' || (pref === null && sysDark)) {
+    document.body.classList.add('dark');
+    document.getElementById('dark-toggle').textContent = '☀️';
+  }
+}
+initDark();
+
 function newRoom() {
   const newId = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
   window.open(location.pathname + '#room=' + newId, '_blank');
@@ -2446,6 +2661,30 @@ groupDoc.get({ source: 'server' })
     setSyncPill('error');
     renderAll();
   });
+
+// ════════════════════════════════════════════════
+// PWA — Service Worker + Install Prompt
+// ════════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(e => console.warn('SW:', e));
+}
+
+let _deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredInstall = e;
+  document.getElementById('pwa-install-btn').style.display = 'flex';
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwa-install-btn').style.display = 'none';
+  _deferredInstall = null;
+});
+
+function installPWA() {
+  if (!_deferredInstall) return;
+  _deferredInstall.prompt();
+  _deferredInstall.userChoice.then(() => { _deferredInstall = null; });
+}
 </script>
 </body>
 </html>

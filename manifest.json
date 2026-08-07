@@ -1,0 +1,12 @@
+{
+  "name": "Expensplit",
+  "short_name": "Expensplit",
+  "description": "Group expense tracker — split bills, settle up",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#5bc5a7",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
