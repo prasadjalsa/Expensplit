@@ -1344,6 +1344,64 @@
   </div>
 </div>
 
+<!-- ═══ DELETE ROOM MODAL — STEP 1 ═══ -->
+<div id="delete-room-step1" class="overlay overlay-center" style="display:none"
+  onclick="overlayClick(event,'delete-room-step1',closeDeleteRoomFlow)">
+  <div class="modal modal-center" onclick="event.stopPropagation()" style="max-width:380px">
+    <div class="modal-head">
+      <span class="modal-title">🗑️ Delete Room — Step 1 of 2</span>
+      <button class="btn-icon" onclick="closeDeleteRoomFlow()" style="font-size:20px">&#x2715;</button>
+    </div>
+    <p style="font-size:14px;color:var(--text-muted);line-height:1.55;margin-bottom:16px">
+      Before deleting, make sure you have a copy of the data. Once deleted, everything is gone permanently.
+    </p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+      <button class="btn btn-ghost btn-full" onclick="exportCSV();void(0)" style="text-align:left;justify-content:flex-start;gap:8px">
+        📥 Export CSV
+      </button>
+      <button class="btn btn-ghost btn-full" onclick="printSummary();void(0)" style="text-align:left;justify-content:flex-start;gap:8px">
+        🖨️ Print / Save PDF
+      </button>
+    </div>
+    <p style="font-size:13px;font-weight:600;margin-bottom:14px">Have you saved a copy of the data?</p>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeDeleteRoomFlow()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" onclick="deleteRoomStep2()">Yes, Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DELETE ROOM MODAL — STEP 2 ═══ -->
+<div id="delete-room-step2" class="overlay overlay-center" style="display:none"
+  onclick="overlayClick(event,'delete-room-step2',closeDeleteRoomFlow)">
+  <div class="modal modal-center" onclick="event.stopPropagation()" style="max-width:380px">
+    <div class="modal-head">
+      <span class="modal-title">🗑️ Delete Room — Step 2 of 2</span>
+      <button class="btn-icon" onclick="closeDeleteRoomFlow()" style="font-size:20px">&#x2715;</button>
+    </div>
+    <p style="font-size:14px;color:var(--text-muted);line-height:1.55;margin-bottom:16px">
+      This will permanently delete <strong id="delete-room-name">this room</strong> for everyone. The room link will stop working for all members.
+    </p>
+    <div class="form-group">
+      <label class="form-label">Have you informed all members?</label>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer">
+          <input type="checkbox" id="delete-room-informed" style="width:17px;height:17px;accent-color:var(--primary)" onchange="updateDeleteRoomBtn()">
+          Yes, all members have been informed
+        </label>
+      </div>
+      <label class="form-label">Type <strong>DELETE</strong> to confirm</label>
+      <input type="text" id="delete-room-confirm-input" class="input"
+        placeholder="Type DELETE here…" oninput="updateDeleteRoomBtn()">
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeDeleteRoomFlow()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" id="delete-room-final-btn"
+        onclick="executeDeleteRoom()" disabled>Delete Room</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ CONFIRM MODAL ═══ -->
 <div id="confirm-modal" class="overlay overlay-center" style="display:none"
   onclick="overlayClick(event,'confirm-modal',cancelConfirm)">
@@ -2755,26 +2813,47 @@ function clearAll() {
 }
 
 function deleteRoom() {
-  showConfirm(
-    'Delete Room',
-    `Permanently delete "${S.name || ROOM_ID}"? This removes everything — members, expenses, settlements — from the cloud. The room link will stop working for everyone. This cannot be undone.`,
-    'Delete Room',
-    () => {
-      groupDoc.delete()
-        .then(() => {
-          localStorage.removeItem('expensplit_room');
-          S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
-          const newId = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
-          history.replaceState(null, '', location.pathname + '#room=' + newId);
-          location.reload();
-        })
-        .catch(e => {
-          console.error('deleteRoom error:', e.code, e.message);
-          toast(`Failed to delete room: ${e.message || 'Check console for details'}`);
-        });
-    }
-    }
-  );
+  document.getElementById('delete-room-step1').style.display = 'flex';
+  closeSettings();
+}
+
+function closeDeleteRoomFlow() {
+  document.getElementById('delete-room-step1').style.display = 'none';
+  document.getElementById('delete-room-step2').style.display = 'none';
+  document.getElementById('delete-room-confirm-input').value = '';
+  document.getElementById('delete-room-informed').checked = false;
+  document.getElementById('delete-room-final-btn').disabled = true;
+}
+
+function deleteRoomStep2() {
+  document.getElementById('delete-room-step1').style.display = 'none';
+  document.getElementById('delete-room-name').textContent = S.name || 'this room';
+  document.getElementById('delete-room-confirm-input').value = '';
+  document.getElementById('delete-room-informed').checked = false;
+  document.getElementById('delete-room-final-btn').disabled = true;
+  document.getElementById('delete-room-step2').style.display = 'flex';
+}
+
+function updateDeleteRoomBtn() {
+  const typed = document.getElementById('delete-room-confirm-input').value.trim();
+  const informed = document.getElementById('delete-room-informed').checked;
+  document.getElementById('delete-room-final-btn').disabled = !(typed === 'DELETE' && informed);
+}
+
+function executeDeleteRoom() {
+  closeDeleteRoomFlow();
+  groupDoc.delete()
+    .then(() => {
+      localStorage.removeItem('expensplit_room');
+      S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
+      const newId = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
+      history.replaceState(null, '', location.pathname + '#room=' + newId);
+      location.reload();
+    })
+    .catch(e => {
+      console.error('deleteRoom error:', e.code, e.message);
+      toast(`Failed to delete room: ${e.message || 'Check console for details'}`);
+    });
 }
 
 // ════════════════════════════════════════════════
