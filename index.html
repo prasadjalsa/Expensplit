@@ -756,13 +756,17 @@
         <a href="#h-setup">Setup</a>
         <a href="#h-upi">UPI &amp; QR</a>
         <a href="#h-expense">Add expense</a>
+        <a href="#h-categories">Categories</a>
         <a href="#h-splits">Split types</a>
         <a href="#h-multipayer">Multi-payer</a>
+        <a href="#h-filter">Filter &amp; sort</a>
         <a href="#h-signoff">Sign-offs</a>
         <a href="#h-settle">Settle up</a>
         <a href="#h-export">Export CSV</a>
         <a href="#h-share">Share room</a>
         <a href="#h-settings">Settings</a>
+        <a href="#h-darkmode">Dark mode</a>
+        <a href="#h-pwa">Install app</a>
         <a href="#h-reuse">Reuse</a>
         <a href="#h-faq">FAQ</a>
       </div>
@@ -778,6 +782,11 @@
         <li><strong>Flexible splits</strong> — equal, unequal, %, or share-based</li>
         <li><strong>Smart settlements</strong> — fewest possible transfers to clear all debts</li>
         <li><strong>Sign-off flow</strong> — each member acknowledges expenses before settling</li>
+        <li><strong>Category icons</strong> — auto-suggested or manually picked per expense</li>
+        <li><strong>Filter &amp; sort</strong> — search, filter by person, sort by date or amount</li>
+        <li><strong>CSV export</strong> — download full expense and settlement history</li>
+        <li><strong>Dark mode</strong> — follows system preference, toggle in header</li>
+        <li><strong>Installable</strong> — add to home screen on Android and iOS</li>
       </ul>
     </div>
 
@@ -843,6 +852,18 @@
       <div class="help-tip"><strong>Tip</strong>Tap any expense card to view a full breakdown. From the detail view you can <strong>Edit</strong> or <strong>Delete</strong> it.</div>
     </div>
 
+    <!-- Categories -->
+    <div class="card" id="h-categories">
+      <div class="help-h2"><span class="help-icon">🎨</span>Expense Category Icons</div>
+      <p class="help-p">Every expense has a category icon shown on its card. When you type a description the app auto-suggests a matching icon — you can keep it or tap any icon in the grid to override it manually.</p>
+      <div class="help-h3">How it works</div>
+      <ol class="help-steps">
+        <li><div><div class="st">Type a description</div><div class="sd">The icon grid highlights the auto-suggested icon based on keywords (e.g. "dinner" → 🍝, "cab" → 🚗).</div></div></li>
+        <li><div><div class="st">Tap any icon to override</div><div class="sd">Your choice is saved with the expense and shown on the expense card.</div></div></li>
+        <li><div><div class="st">Clear the choice</div><div class="sd">Edit the expense and tap a different icon, or leave the description unchanged to revert to auto-suggest.</div></div></li>
+      </ol>
+    </div>
+
     <!-- Split types -->
     <div class="card" id="h-splits">
       <div class="help-h2"><span class="help-icon">✂️</span>Split Types</div>
@@ -887,6 +908,21 @@
       </ol>
     </div>
 
+    <!-- Filter & Sort -->
+    <div class="card" id="h-filter">
+      <div class="help-h2"><span class="help-icon">🔍</span>Filter &amp; Sort Expenses</div>
+      <p class="help-p">The Expenses tab has a filter bar at the top with three controls:</p>
+      <table class="help-table">
+        <thead><tr><th>Control</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Search</strong></td><td>Filters by description — type any keyword to narrow the list</td></tr>
+          <tr><td><strong>All people</strong></td><td>Shows only expenses where that person paid or was split with</td></tr>
+          <tr><td><strong>Sort</strong></td><td>Newest first, Oldest first, Highest amount, Lowest amount</td></tr>
+        </tbody>
+      </table>
+      <div class="help-tip"><strong>Tip</strong>Combine search and person filter together — e.g. search "food" and filter by Alice to see all food expenses Alice was part of.</div>
+    </div>
+
     <!-- Sign-off -->
     <div class="card" id="h-signoff">
       <div class="help-h2"><span class="help-icon">✅</span>How to: Sign off</div>
@@ -917,6 +953,7 @@
         <li><div><div class="st">Repeat until all transfers are recorded</div><div class="sd">App shows 🎉 All settled up! when every balance is cleared.</div></div></li>
       </ol>
       <div class="help-tip"><strong>Tip</strong>The smart settlement algorithm minimises transfers. 5 people with complex debts may need only 4 (or fewer) payments to fully balance out.</div>
+      <div class="help-tip"><strong>Edit a recorded payment</strong>In the Settlement History section, tap the ✏️ pencil icon next to any payment to edit its amount, date, or note. Tap ✕ to delete it.</div>
     </div>
 
     <!-- Export CSV -->
@@ -961,6 +998,31 @@
       <p class="help-p"><strong>Clear All Data</strong> — wipes expenses, settlements, and sign-offs but keeps the room alive with all members, group name, and currency intact. The room link still works. Use this to reuse the same group for a new trip.</p>
       <p class="help-p"><strong>Delete Room</strong> — permanently removes the entire room from Firebase including members, expenses, and the room itself. The room link stops working for everyone. Use this to fully close a room you no longer need.</p>
       <div class="help-note"><strong>Cannot be undone</strong>Both actions are irreversible. Take a screenshot of Settlement History before proceeding if you need a record.</div>
+    </div>
+
+    <!-- Dark Mode -->
+    <div class="card" id="h-darkmode">
+      <div class="help-h2"><span class="help-icon">🌙</span>Dark Mode</div>
+      <p class="help-p">Tap the 🌙 button in the header to switch to dark mode. Tap ☀️ to switch back. Your preference is saved and restored automatically on every visit.</p>
+      <div class="help-tip"><strong>Tip</strong>On first visit the app follows your device's system preference — if your phone is in dark mode, the app opens in dark mode automatically.</div>
+    </div>
+
+    <!-- PWA / Install -->
+    <div class="card" id="h-pwa">
+      <div class="help-h2"><span class="help-icon">📲</span>Install as App</div>
+      <p class="help-p">Expensplit can be installed to your home screen and launched like a native app — no App Store required.</p>
+      <div class="help-h3">On Android (Chrome)</div>
+      <ol class="help-steps">
+        <li><div><div class="st">A 📲 Install button appears in the header</div><div class="sd">Tap it when prompted by the browser.</div></div></li>
+        <li><div><div class="st">Tap Install in the browser prompt</div><div class="sd">The app is added to your home screen and opens in standalone mode (no browser chrome).</div></div></li>
+      </ol>
+      <div class="help-h3">On iPhone (Safari)</div>
+      <ol class="help-steps">
+        <li><div><div class="st">Open the app in Safari</div></div></li>
+        <li><div><div class="st">Tap the Share button (box with arrow)</div></div></li>
+        <li><div><div class="st">Tap "Add to Home Screen"</div><div class="sd">The app icon appears on your home screen and opens fullscreen.</div></div></li>
+      </ol>
+      <div class="help-note"><strong>Note</strong>The 📲 Install button only appears on browsers that support the install prompt (Chrome on Android, Edge on desktop). On iOS you must use the Safari share sheet.</div>
     </div>
 
     <!-- Reuse -->
