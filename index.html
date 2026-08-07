@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#5bc5a7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Expensplit">
   <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
   <title>Expensplit</title>
   <style>
     :root {
@@ -989,23 +993,14 @@
     <!-- Notifications -->
     <div class="card" id="h-notifications">
       <div class="help-h2"><span class="help-icon">🔔</span>Notifications</div>
-      <p class="help-p">Turn on notifications to get an alert whenever an expense involving you is added, edited, or deleted — even when the app is in the background.</p>
+      <p class="help-p">Turn on notifications to get an alert whenever an expense involving you is added, edited, or deleted.</p>
       <ol class="help-steps">
-        <li><div><div class="st">Set your identity first</div><div class="sd">Go to the Activity tab and select who you are. Notifications only work if the app knows which person you are.</div></div></li>
-        <li><div><div class="st">Open Settings ⚙️ → Notifications</div><div class="sd">Tap <strong>Turn On</strong>. Your browser will ask for permission — tap Allow.</div></div></li>
-        <li><div><div class="st">You're set</div><div class="sd">A test notification confirms it's working. From now on you'll be notified when expenses involving you change.</div></div></li>
+        <li><div><div class="st">Set your identity first</div><div class="sd">Go to the Activity tab and select who you are. The app needs to know which person you are to send you relevant alerts.</div></div></li>
+        <li><div><div class="st">Open Settings ⚙️ → Notifications → Turn On</div><div class="sd">Your browser will ask for permission — tap Allow. A quick test notification confirms it's working.</div></div></li>
       </ol>
-      <div class="help-h3">Platform support</div>
-      <table class="help-table">
-        <thead><tr><th>Device</th><th>Support</th></tr></thead>
-        <tbody>
-          <tr><td>Android (Chrome)</td><td>✅ Full — works even when app is in background</td></tr>
-          <tr><td>iPhone (Safari, installed as PWA)</td><td>✅ Works on iOS 16.4+</td></tr>
-          <tr><td>Desktop (Chrome / Edge)</td><td>✅ Full support</td></tr>
-          <tr><td>iPhone (Chrome / Firefox)</td><td>❌ Not supported — use Safari instead</td></tr>
-        </tbody>
-      </table>
-      <div class="help-note"><strong>Blocked?</strong>If you accidentally tapped "Block", go to your browser settings → Site permissions → Notifications → find this site and set it to Allow.</div>
+      <div class="help-tip"><strong>Android &amp; Desktop</strong> — Notifications fire even when the app is in the background.</div>
+      <div class="help-tip"><strong>iPhone</strong> — Notifications work when the app is installed to your home screen (via Safari Add to Home Screen) and the app is open or recently used.</div>
+      <div class="help-note"><strong>Blocked?</strong>If you tapped "Block" by mistake, go to your phone's Settings → Safari or Chrome → find this site and allow notifications.</div>
     </div>
 
     <!-- Share room -->
@@ -1046,19 +1041,20 @@
     <!-- PWA / Install -->
     <div class="card" id="h-pwa">
       <div class="help-h2"><span class="help-icon">📲</span>Installing the app</div>
-      <p class="help-p">You can add Expensplit to your home screen so it opens like a regular app — no App Store needed.</p>
+      <p class="help-p">Add Expensplit to your home screen so it's always one tap away — no App Store needed.</p>
       <div class="help-h3">On Android</div>
       <ol class="help-steps">
         <li><div><div class="st">Tap the 📲 Install button in the header</div><div class="sd">This appears automatically in Chrome when the app is ready to install.</div></div></li>
-        <li><div><div class="st">Tap Install when asked</div><div class="sd">The app appears on your home screen and opens without any browser bars.</div></div></li>
+        <li><div><div class="st">Tap Install when asked</div><div class="sd">The app icon appears on your home screen. It opens fullscreen and supports notifications.</div></div></li>
       </ol>
       <div class="help-h3">On iPhone</div>
       <ol class="help-steps">
-        <li><div><div class="st">Open the app in Safari</div></div></li>
-        <li><div><div class="st">Tap the Share button (the box with an arrow pointing up)</div></div></li>
-        <li><div><div class="st">Tap "Add to Home Screen"</div><div class="sd">The app icon appears on your home screen and opens fullscreen.</div></div></li>
+        <li><div><div class="st">Copy your room link first</div><div class="sd">Tap 🔗 in the header or Copy Link on the People tab to copy the full room link.</div></div></li>
+        <li><div><div class="st">Tap the Share button in Safari (box with arrow pointing up)</div></div></li>
+        <li><div><div class="st">Tap "Add to Home Screen"</div></div></li>
+        <li><div><div class="st">Open the app from your home screen</div><div class="sd">On first launch you'll see a welcome screen — paste your room link there and tap Join Room. You won't be asked again.</div></div></li>
       </ol>
-      <div class="help-note"><strong>Note</strong>On iPhones, you must use Safari — the install option is not available in Chrome or other browsers on iOS.</div>
+      <div class="help-note"><strong>iPhone tip</strong>Copy your room link before installing so you have it ready for the first launch. Use Safari — Chrome and other browsers on iPhone don't support Add to Home Screen.</div>
     </div>
 
     <!-- Reuse -->
@@ -1364,6 +1360,28 @@
   </div>
 </div>
 
+<!-- ═══ PWA ROOM SETUP MODAL ═══ -->
+<div id="pwa-room-modal" class="overlay overlay-center" style="display:none">
+  <div class="modal modal-center" onclick="event.stopPropagation()">
+    <div style="text-align:center;padding:8px 0 16px">
+      <div style="font-size:44px;margin-bottom:8px">💸</div>
+      <div class="modal-title" style="font-size:20px">Welcome to Expensplit</div>
+      <p style="font-size:14px;color:var(--text-muted);margin-top:8px;line-height:1.55">
+        Paste your group's room link below to join your existing room, or start fresh.
+      </p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Room link</label>
+      <input type="text" id="pwa-room-input" class="input"
+        placeholder="Paste your room link here…"
+        oninput="updatePwaRoomHint()">
+      <div id="pwa-room-hint" class="hint" style="margin-top:6px"></div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="joinRoomFromModal()">Join Room</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:8px" onclick="skipRoomModal()">Start a new room instead</button>
+  </div>
+</div>
+
 <!-- ═══ WHO ARE YOU MODAL ═══ -->
 <div id="identity-modal" class="overlay overlay-center" style="display:none">
   <div class="modal modal-center" onclick="event.stopPropagation()">
@@ -1409,6 +1427,18 @@ function getRoomId() {
   if (stored) {
     history.replaceState(null, '', location.pathname + location.search + '#room=' + stored);
     return stored;
+  }
+  // Standalone PWA with no saved room — show in-app modal after load
+  const isStandalone = window.navigator.standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches;
+  if (isStandalone) {
+    // Generate a temporary room ID — will be replaced if user joins existing room
+    const temp = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
+    history.replaceState(null, '', location.pathname + '#room=' + temp);
+    // Show modal after app loads
+    window._showPwaRoomModal = true;
+    window._tempRoomId = temp;
+    return temp;
   }
   const fresh = Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8);
   localStorage.setItem('expensplit_room', fresh);
@@ -1485,6 +1515,46 @@ function save() {
 }
 function uid() {
   return Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
+}
+
+// ════════════════════════════════════════════════
+// PWA ROOM SETUP MODAL
+// ════════════════════════════════════════════════
+function updatePwaRoomHint() {
+  const val = document.getElementById('pwa-room-input').value.trim();
+  const el = document.getElementById('pwa-room-hint');
+  if (!val) { el.innerHTML = ''; return; }
+  const extracted = (val.match(/[#&]room=([^&]+)/) || [])[1] || val;
+  if (extracted.length >= 8) {
+    el.innerHTML = `<span style="color:var(--success)">✓ Room code: <strong>${esc(extracted)}</strong></span>`;
+  } else {
+    el.innerHTML = `<span style="color:var(--text-muted)">Paste the full room link from your group chat</span>`;
+  }
+}
+
+function joinRoomFromModal() {
+  const val = document.getElementById('pwa-room-input').value.trim();
+  if (!val) { toast('Paste your room link first'); return; }
+  const extracted = (val.match(/[#&]room=([^&]+)/) || [])[1] || val.trim();
+  if (!extracted || extracted.length < 4) { toast('Invalid room link — paste the full link'); return; }
+  localStorage.setItem('expensplit_room', extracted);
+  history.replaceState(null, '', location.pathname + '#room=' + extracted);
+  document.getElementById('pwa-room-modal').style.display = 'none';
+  // Reload to initialise Firestore with the correct room
+  location.reload();
+}
+
+function skipRoomModal() {
+  const fresh = window._tempRoomId || (Math.random().toString(36).slice(2,8) + Math.random().toString(36).slice(2,8));
+  localStorage.setItem('expensplit_room', fresh);
+  history.replaceState(null, '', location.pathname + '#room=' + fresh);
+  document.getElementById('pwa-room-modal').style.display = 'none';
+}
+
+function maybeShowPwaRoomModal() {
+  if (window._showPwaRoomModal) {
+    document.getElementById('pwa-room-modal').style.display = 'flex';
+  }
 }
 
 // ════════════════════════════════════════════════
@@ -3205,12 +3275,14 @@ groupDoc.get({ source: 'server' })
       S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
     }
     renderAll();
+    maybeShowPwaRoomModal();
     maybePromptIdentity();
   })
   .catch(() => {
     load();
     setSyncPill('error');
     renderAll();
+    maybeShowPwaRoomModal();
     maybePromptIdentity();
   });
 
