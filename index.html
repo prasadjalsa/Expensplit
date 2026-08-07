@@ -1216,7 +1216,17 @@ function setSyncPill(state) {
 // ════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════
-const STORE_KEY = 'splitease_v1';
+const STORE_KEY = 'expensplit_v1';
+
+// Migrate data from old key if present
+(function migrateLegacyStorage() {
+  const OLD_KEY = 'splitease_v1';
+  const old = localStorage.getItem(OLD_KEY);
+  if (old && !localStorage.getItem(STORE_KEY)) {
+    localStorage.setItem(STORE_KEY, old);
+  }
+  localStorage.removeItem(OLD_KEY);
+})();
 let S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], acks: {} };
 
 function load() {
@@ -1308,16 +1318,23 @@ function renderPeople() {
 }
 
 // ── Acknowledgements ───────────────────────────
+function expenseHash() {
+  return S.expenses.map(e => e.id).sort().join(',');
+}
+
 function ackStatus(personId) {
   const ack = (S.acks || {})[personId];
   if (!ack) return 'pending';
-  if (ack.expenseCount < S.expenses.length) return 'stale';
-  return 'confirmed';
+  if (ack.expenseHash !== undefined) {
+    return ack.expenseHash === expenseHash() ? 'confirmed' : 'stale';
+  }
+  // legacy: old acks stored expenseCount — treat as stale so user re-confirms once
+  return 'stale';
 }
 
 function confirmAck(personId) {
   if (!S.acks) S.acks = {};
-  S.acks[personId] = { ackedAt: new Date().toISOString(), expenseCount: S.expenses.length };
+  S.acks[personId] = { ackedAt: new Date().toISOString(), expenseHash: expenseHash() };
   save(); renderAcks();
   toast(`${personName(personId)} confirmed!`);
 }
@@ -1363,8 +1380,7 @@ function renderAcks() {
         badge  = `<span class="badge badge-green">✓ Confirmed &nbsp;·&nbsp; ${d}</span>`;
         action = `<button class="btn btn-ghost btn-sm" onclick="revokeAck('${p.id}')">Revoke</button>`;
       } else if (st === 'stale') {
-        const n = S.expenses.length - ack.expenseCount;
-        badge  = `<span class="badge" style="background:#fefcbf;color:#744210">⚠ ${n} new expense${n > 1 ? 's' : ''} added</span>`;
+        badge  = `<span class="badge" style="background:#fefcbf;color:#744210">⚠ Expenses changed</span>`;
         action = `<button class="btn btn-primary btn-sm" onclick="confirmAck('${p.id}')">Re-confirm</button>`;
       } else {
         badge  = `<span class="badge badge-gray">Pending</span>`;
@@ -2189,7 +2205,10 @@ function fmtDate(d) {
       { day: 'numeric', month: 'short', year: 'numeric' });
   } catch (_) { return d; }
 }
-function today() { return new Date().toISOString().split('T')[0]; }
+function today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 function esc(s) {
   return String(s || '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
