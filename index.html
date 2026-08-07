@@ -1603,39 +1603,9 @@ let S = { currency: '₹', name: '', people: [], expenses: [], settlements: [], 
 function load() {
   try { const d = localStorage.getItem(STORE_KEY); if (d) S = JSON.parse(d); } catch (_) {}
 }
-let _lastSavedHash = null;
-
-function stateHash(state) {
-  const s = JSON.stringify(state);
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
-  return h;
-}
-
 function save() {
   localStorage.setItem(STORE_KEY, JSON.stringify(S));
-  const myHash = stateHash(S);
-  _lastSavedHash = myHash;
-
-  db.runTransaction(tx => tx.get(groupDoc).then(snap => {
-    // If another user saved since our last read, warn before overwriting
-    if (snap.exists) {
-      const remote = snap.data().state;
-      const remoteHash = stateHash(remote);
-      if (_lastSavedHash !== myHash && remoteHash !== stateHash(S)) {
-        // Remote changed independently — surface a toast warning
-        toast('⚠️ Someone else made changes. Reloading…');
-        setTimeout(() => location.reload(), 1800);
-        throw new Error('conflict');
-      }
-    }
-    tx.set(groupDoc, { state: S });
-  })).catch(e => {
-    if (e.message !== 'conflict') {
-      // Transaction failed for non-conflict reason (offline etc) — fall back to set
-      groupDoc.set({ state: S }).catch(err => console.error('Firestore save:', err));
-    }
-  });
+  groupDoc.set({ state: S }).catch(e => console.error('Firestore save:', e));
 }
 function uid() {
   return Math.random().toString(36).slice(2, 9) + Date.now().toString(36);
