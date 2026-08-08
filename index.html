@@ -2856,7 +2856,7 @@ function saveGroupName() {
 function updateHeaderName() {
   const name = S.name || '';
   document.getElementById('name-text').textContent = name || 'Tap to add a name';
-  document.title = name ? `${name} — Expensplit` : 'Expensplit';
+  document.title = name ? name : 'Expensplit';
 }
 
 // ════════════════════════════════════════════════
